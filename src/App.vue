@@ -1,11 +1,13 @@
 <script setup>
 import RelightViewer from './components/RelightViewer.vue'
+import List from './components/List.vue'
 </script>
 
 <template>
   <main>
+    <List/>
     <!-- <RelightViewer url="test/bilinear18" /> -->
-    <RelightViewer url="test-image" />
+    <!-- <RelightViewer url="test-image" /> -->
   </main>
 </template>
 
