@@ -4,18 +4,21 @@ const artifactList = [
     title: "Bronze Age Spearhead",
     description: "A Bronze Age spearhead with ornate engravings, likely used for ceremonial purposes.",
     images: [
-      "/images/artifact-001-front.jpg",
+      "/test/coin10.jpg",
       "/images/artifact-001-side.jpg",
-      "/images/artifact-001-detail.jpg"
+      "/images/artifact-001-detail.jpg",
+      "/images/artifact-001-detail.jpg",
+      "/images/artifact-001-detail.jpg",
+      "/images/artifact-001-detail.jpg",
+      "/images/artifact-001-detail.jpg",
+      "/images/artifact-001-detail.jpg",
+      "/images/artifact-001-detail.jpg",
+      "/images/artifact-001-detail.jpg",
     ],
     relightableMedia: [
       {
         type: "RTI",
-        url: "/relightable/artifact-001.rti"
-      },
-      {
-        type: "3D",
-        url: "/3d/artifact-001.glb"
+        url: "test-image"
       }
     ],
     creator: "Unknown",
