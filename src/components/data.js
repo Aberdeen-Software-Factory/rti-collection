@@ -1,14 +1,14 @@
 const artifactList = [
   {
     id: "artifact-001",
-    title: "Bronze Age Spearhead",
-    description: "A Bronze Age spearhead with ornate engravings, likely used for ceremonial purposes.",
+    title: "Abibaal",
+    description: "A rare gold coin from antiquity, likely used in high-value trade or ceremonial offerings.",
     images: [
       "/test/coin10.jpg",
-      "/images/artifact-001-side.jpg",
-      "/images/artifact-001-detail.jpg",
-      "/images/artifact-001-detail.jpg",
-      "/images/artifact-001-detail.jpg",
+      "/img/1.jpg",
+      "/img/2.jpg",
+      "/img/3.jpg",
+      "/img/4.jpg",
       "/images/artifact-001-detail.jpg",
       "/images/artifact-001-detail.jpg",
       "/images/artifact-001-detail.jpg",
@@ -18,13 +18,23 @@ const artifactList = [
     relightableMedia: [
       {
         type: "RTI",
-        url: "test-image"
-      }
+        url: "rti/abibaal/Abibaal_1000/info.json",
+        thumbnail: "rti/abibaal/Abibaal_1000/Abibaal_1000.jpg"
+      },
+      {
+        type: "RTI",
+        url: "rti/abibaal/Abibaal_side_01_fullsize/info.json",
+        thumbnail: "rti/abibaal/Abibaal_side_01_fullsize/thumbnail.jpg"
+      },
+      {
+        type: "RTI",
+        url: "test/ptm/info.json"
+      },
     ],
     creator: "Unknown",
-    date: "c. 1200 BCE",
+    date: "c. 600 BCE",
     copyright: "© Museum of Antiquities",
-    tags: ["Bronze Age", "Weapon", "Ceremonial", "Engraving"]
+    tags: ["Gold", "Coin", "Ancient", "Currency"]
   },
   {
     id: "artifact-002",
@@ -37,8 +47,8 @@ const artifactList = [
     relightableMedia: [
       {
         type: "RTI",
-        url: "/relightable/artifact-002.rti"
-      }
+        url: "test-image"
+      },
     ],
     creator: "Roman Empire",
     date: "27 BCE",
