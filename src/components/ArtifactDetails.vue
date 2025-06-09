@@ -1,8 +1,6 @@
 <script setup>
 const props = defineProps(['artifact'])
 import OpenLimeViewer from './rti/OpenLimeViewer.vue'
-import OpenLimeThumbnail from './rti/OpenLimeThumbnail.vue'
-import RTIThumbnailList from './rti/RTIThumbnailList.vue';
 import ImageThumbnailList from './ImageThumbnailList.vue';
 import ArtifactThumbnailList from './ArtifactThumbnailList.vue';
 

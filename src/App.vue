@@ -2,7 +2,6 @@
 import RelightViewer from './components/rti/RelightViewer.vue'
 import OpenLimeViewer from './components/rti/OpenLimeViewer.vue'
 import ArtifactDetail from './components/ArtifactDetails.vue'
-import OpenLimeThumbnail from './components/rti/OpenLimeThumbnail.vue'
 import List from './components/List.vue'
 
 import artifactList from './components/data.js'
