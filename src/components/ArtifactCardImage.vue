@@ -1,9 +1,13 @@
 <script setup>
-    defineProps(['artifact'])
+defineProps(['artifact'])
+
+function getThumbnail(artifact) {
+  return artifact.relightableMedia[0].thumbnail;
+}
 </script>
 
 <template>
-    <img v-bind:src="'/test/coin10.jpg'"/>
+  <img v-bind:src="getThumbnail(artifact)"/>
 </template>
 
 <style scoped>

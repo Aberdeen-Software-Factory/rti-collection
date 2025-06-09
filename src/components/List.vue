@@ -1,15 +1,18 @@
 <script setup>
-import ArtifactCard from './ArtifactCard.vue'
-import artifactList from './data.js'
-
+import ArtifactCard from './ArtifactCard.vue';
+import artifactList from './data.js';
+import { getArtifacts } from '../utils';
 
 </script>
 
 <template>
     <div class="main">
-        <ArtifactCard v-bind:artifact="artifactList[0]"/>
-        <ArtifactCard v-bind:artifact="artifactList[2]"/>
-        <ArtifactCard v-bind:artifact="artifactList[3]"/>
+        <ArtifactCard
+          v-for="(artifact, index) in getArtifacts()"
+          :key="index"
+          :artifact="artifact"
+          @click="() => $router.push({ name: 'artifact', params: { id: artifact.id } })"
+    />
     </div>
 </template>
 

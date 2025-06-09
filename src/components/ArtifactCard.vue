@@ -5,7 +5,7 @@
 
 <template>
 <section class="artifact-card">
-    <ArtifactCardImage/>
+    <ArtifactCardImage :artifact/>
     <h1>{{ artifact.title }}</h1>
     <p>{{ artifact.description }}</p>
     <p>{{ artifact.copyright }}</p>

@@ -1,6 +1,10 @@
 <script setup>
 const props = defineProps(['media']);
 const selected = defineModel('selected');
+
+function getThumbnailUrl(path) {
+  return new URL(path, window.location.origin).toString();
+}
 </script>
 
 <template>
@@ -9,7 +13,7 @@ const selected = defineModel('selected');
             <img
             v-for="(rti, index) in media"
             :key="index"
-            :src="rti.thumbnail"
+            :src="getThumbnailUrl(rti.thumbnail)"
             :class="{ selected: selected === rti.url }"
             v-on:click="selected = rti.url"
             />
