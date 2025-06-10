@@ -7,7 +7,7 @@ let limeElement = ref();
 
 function initViewer(url) {
 	limeElement.value.replaceChildren();
-	
+
 	if (url.endsWith('info.json')) {
 		initRTI('.openlime', url);
 	} else if (url.endsWith('.jpg')) {
@@ -43,7 +43,9 @@ function initRTI(viewer, path) {
 	});
 	
 	lime.canvas.addLayer('RTI', layer); 
-	OpenLIME.Skin.setUrl(new URL('openlime/skin.svg', window.location.origin));
+	OpenLIME.Skin.setUrl(new URL('openlime/skin.svg', window.location.origin).toString());
+	// OpenLIME.Skin.setUrl('openlime/skin.svg');
+
 	let ui = new OpenLIME.UIBasic(lime, {
 		// skin: 'skin.svg',
 		showLightDirections: false
@@ -73,7 +75,8 @@ function initJPG(viewer, path) {
 	});
 	
 	lime.canvas.addLayer('JPG', layer);
-	
+	OpenLIME.Skin.setUrl(new URL('openlime/skin.svg', window.location.origin).toString());
+
 	let ui = new OpenLIME.UIBasic(lime);
 	ui.actions.light.display = false;
 	ui.actions.layers.display = false;

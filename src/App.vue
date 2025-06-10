@@ -18,6 +18,7 @@ import artifactList from './components/data.js'
   </p>
   <RouterLink to="/">Collection</RouterLink>
   <RouterLink to="/artifact/artifact-001">Go to About</RouterLink>
+  <RouterLink to="/upload">Upload</RouterLink>
   <RouterView/>
     <!-- <ArtifactDetail v-bind:artifact="artifactList[0]"/> -->
      <!-- <OpenLimeThumbnail url="test/ptm"/>

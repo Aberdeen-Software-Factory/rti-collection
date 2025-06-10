@@ -3,7 +3,7 @@ const props = defineProps(['media']);
 const selected = defineModel('selected');
 
 function getThumbnailUrl(path) {
-  return new URL(path, window.location.origin).toString();
+  return new URL(path, "http://localhost:8000/").toString();
 }
 </script>
 

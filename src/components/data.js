@@ -18,6 +18,11 @@ const artifactList = [
     relightableMedia: [
       {
         type: "RTI",
+        url: "http://localhost:8000/files/artifacts/6fdf38bc-606e-4632-8425-7eea52e25bf9/rti/fa33d74e-8a96-4965-abd8-f3326ad0965d/info.json",
+        thumbnail: "rti/abibaal/Abibaal_1000/Abibaal_1000.jpg"
+      },
+      {
+        type: "RTI",
         url: "rti/abibaal/Abibaal_1000/info.json",
         thumbnail: "rti/abibaal/Abibaal_1000/Abibaal_1000.jpg"
       },
