@@ -108,7 +108,7 @@ async function handleSubmit(event, a) {
 </section>
 <div v-if="artifact && !isEditing">
   <h1>{{ artifact.title }}</h1>
-
+  
   <OpenLimeViewer :url="getThumbnailUrl(selectedMedia)"/> 
   <!-- <NewViewer :url="selectedMedia"/> -->
   
@@ -135,11 +135,11 @@ async function handleSubmit(event, a) {
   
   
   <ArtifactDetails
-    :title="artifact.title"
-    :description="artifact.description"
-    :creator="artifact.creator"
-    :date="artifact.date"
-    :copyright="artifact.copyright"
+  :title="artifact.title"
+  :description="artifact.description"
+  :creator="artifact.creator"
+  :date="artifact.date"
+  :copyright="artifact.copyright"
   />
   <br/>
   <button @click="isEditing = !isEditing">Edit</button>

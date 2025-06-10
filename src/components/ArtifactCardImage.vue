@@ -12,20 +12,32 @@ function getThumbnail(artifact) {
 
 <template>
   <!-- <img v-bind:src="getThumbnail(artifact)"/> -->
-  <img v-bind:src="'http://localhost:8000' + artifact.thumbnail"/>
+   <div class="img-wrapper">
+    <img :src="'http://localhost:8000' + artifact.thumbnail"/>
+  </div>
 </template>
 
 <style scoped>
+.img-wrapper {
+  display: flex;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+  /* border-radius: 5px; */
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: rgb(255, 255, 255, 0.2);
+}
+
 img {
-  aspect-ratio: 1/1;
-  width:100%;
-  border-radius:5px;
-  cursor:pointer;
-  opacity:0.9;
-  transition: opacity 0.2s;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  display: block;
+  /* border-radius removed here because wrapper handles it */
 }
-img:hover{
-  opacity:1;
-}
+
+
 </style>

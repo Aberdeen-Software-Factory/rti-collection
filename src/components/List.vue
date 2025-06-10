@@ -36,10 +36,10 @@ onMounted(() => {
 
 <style scoped>
 .main {
-  padding:10px;
+  padding: 30px 0;
   display:grid;
   grid-template-columns: 1fr;
-  gap:10px;
+  gap:40px;
 }
 
 @media (min-width:414px){
