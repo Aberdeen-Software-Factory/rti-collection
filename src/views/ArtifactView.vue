@@ -4,12 +4,15 @@ import OpenLimeViewer from '../components/rti/OpenLimeViewer.vue'
 import ImageThumbnailList from '../components/ImageThumbnailList.vue';
 import ArtifactThumbnailList from '../components/ArtifactThumbnailList.vue';
 // import { getArtifact } from '../utils';
+import ArtifactForm from '../components/ArtifactForm.vue'
+import ArtifactDetails from '../components/ArtifactDetails.vue'
 
 import { ref, onMounted } from 'vue'
 
 
 const artifact = ref()
 const selectedMedia = ref("")
+const isEditing = ref(false)
 
 async function getArtifact(id) {
   try {
@@ -42,77 +45,107 @@ function getDefaultMedia(artifact) {
 function getThumbnailUrl(path) {
   return new URL(path, "http://localhost:8000/files").toString(); //TODO add the prefix to the openlimeviewer component
 }
+
+async function handleSubmit(event, a) {
+  console.log(a)
+  console.log(artifact)
+  
+  event.preventDefault();
+  const formData = new FormData()
+  formData.append('title', a.title)
+  formData.append('description', a.description)
+  formData.append('creator', a.creator)
+  formData.append('date', a.date)
+  formData.append('copyright', a.copyright)
+  
+  console.log(a.images)
+  for (const file of a.images) {
+    formData.append('images', file) // Note: repeated key name for FastAPI List[UploadFile]
+  }
+  
+  try {
+    const response = await fetch(`http://localhost:8000/artifacts/${artifact.value.id}`, {
+      method: 'PUT',
+      body: formData
+    })
+    
+    if (response.ok) {  // true for 200–299 status codes
+      const data = await response.json()
+      console.log('Upload successful:', data)
+      isEditing.value = false
+      getArtifact(props.id)
+    } else {
+      console.log('Upload failed with status:', response.status)
+      // optionally parse error JSON:
+      try {
+        const errorData = await response.json()
+        console.log('Error details:', errorData)
+      } catch {
+        // no JSON body
+      }
+    }
+  } catch (error) {
+    console.error('Upload failed:', error)
+  }
+}
 </script>
 
 <template>
-  <div v-if="artifact">
-    <OpenLimeViewer :url="getThumbnailUrl(selectedMedia)"/> 
-    <!-- <NewViewer :url="selectedMedia"/> -->
-    
-    <p>
-      Relightable Images ({{ artifact.relightableMedia.length }})
-      <!-- <a href="javascript:void(0) " onclick="document.getElementById('fileUpload').click()">Upload</a>
-      <input 
-      type="file" 
-      id="fileUpload" 
-      style="display: none;" 
-      accept="image/*" 
-      @change="handleFileUpload"
-      /> -->
-    </p>
-    <ArtifactThumbnailList
-    v-model:selected="selectedMedia"
-    :media="artifact.relightableMedia"
-    />
-    
-    <ImageThumbnailList
-    v-model:selectedUrl="selectedMedia"
-    :urls="artifact.images"
-    />
-    
-    <h1>{{ artifact.title }}</h1>
-    <table>
-      <tbody>
-        <tr>
-          <th>Description</th>
-          <td>{{ artifact.description }}</td>
-        </tr>
-        <tr>
-          <th>Creator</th>
-          <td>{{ artifact.creator }}</td>
-        </tr>
-        <tr>
-          <th>Date</th>
-          <td>{{ artifact.date }}</td>
-        </tr>
-        <tr>
-          <th>Copyright</th>
-          <td>{{ artifact.copyright }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <section v-if="isEditing">
+    <ArtifactForm v-if="artifact"
+    :title="artifact.title"
+    :description="artifact.description"
+    :creator="artifact.creator"
+    :date="artifact.date"
+    :copyright="artifact.copyright"
+    :rtis="artifact.relightableMedia"
+    :images="artifact.images"
+    @submit="handleSubmit"
+    >
+    <button @click="isEditing = false">Cancel</button>
+    <button type="submit">Save</button>
+  </ArtifactForm>
+</section>
+<div v-if="artifact && !isEditing">
+  <h1>{{ artifact.title }}</h1>
+
+  <OpenLimeViewer :url="getThumbnailUrl(selectedMedia)"/> 
+  <!-- <NewViewer :url="selectedMedia"/> -->
+  
+  <p>
+    Relightable Images ({{ artifact.relightableMedia.length }})
+    <!-- <a href="javascript:void(0) " onclick="document.getElementById('fileUpload').click()">Upload</a>
+    <input 
+    type="file" 
+    id="fileUpload" 
+    style="display: none;" 
+    accept="image/*" 
+    @change="handleFileUpload"
+    /> -->
+  </p>
+  <ArtifactThumbnailList
+  v-model:selected="selectedMedia"
+  :media="artifact.relightableMedia"
+  />
+  
+  <ImageThumbnailList
+  v-model:selectedUrl="selectedMedia"
+  :urls="artifact.images"
+  />
+  
+  
+  <ArtifactDetails
+    :title="artifact.title"
+    :description="artifact.description"
+    :creator="artifact.creator"
+    :date="artifact.date"
+    :copyright="artifact.copyright"
+  />
+  <br/>
+  <button @click="isEditing = !isEditing">Edit</button>
+</div>
 </template>
 
 <style scoped>
-table {
-    width: 100%;
-    border-spacing: 0 0.5rem; /* horizontal gap: 0, vertical gap: 1rem */
-    border-collapse: separate;
-    margin-top: 1rem;
-}
 
-th {
-    text-align: left;
-    vertical-align: top;
-    font-weight: bold;
-    white-space: nowrap; /* Prevent label wrapping */
-    width: 1%; /* Shrink to fit content */
-    padding-right: 1rem;
-}
-
-td {
-    width: auto; /* Take remaining space */
-    padding: 0;
-}
 </style>
