@@ -2,6 +2,8 @@
 const props = defineProps(['media']);
 const selected = defineModel('selected');
 
+import RTIThumbnail from './RTIThumbnail.vue';
+
 function getThumbnailUrl(path) {
   return new URL(path, "http://localhost:8000/").toString();
 }
@@ -10,9 +12,10 @@ function getThumbnailUrl(path) {
 <template>
     <div class="image-scroller">
         <div class="image-list">
-            <img
+            <RTIThumbnail
             v-for="(rti, index) in media"
             :key="index"
+            :rti="rti"
             :src="getThumbnailUrl(rti.thumbnail)"
             :class="{ selected: selected === rti.url }"
             v-on:click="selected = rti.url"

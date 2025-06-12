@@ -67,6 +67,7 @@ function removeImage(index) {
 
 async function handleSubmit(event) {
     emit('submit', event, {
+        id: id.value,
         title: title.value,
         description: description.value,
         creator: creator.value,

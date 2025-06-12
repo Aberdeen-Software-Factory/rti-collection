@@ -7,6 +7,32 @@ main {
   font-weight: normal;
 }
 
+/* Thumbnail views for images and RTIs */
+.thumbnail {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid rgb(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    transition: 100ms;
+    white-space: auto;
+}
+
+.thumbnail.clickable {
+    cursor: pointer;
+}
+
+.thumbnail.clickable:hover {
+    transform: scale(0.95);
+}
+
+.thumbnail.selected {
+    border: 2px solid rgb(255, 255, 255, 0.7);
+}
+
 /* a,
 .green {
   text-decoration: none;

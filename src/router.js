@@ -1,11 +1,11 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
-import List from './components/List.vue'
+import Collection from './components/Collection.vue'
 import ArtifactView from './views/ArtifactView.vue'
 import UploadView from './views/UploadView.vue'
 
 const routes = [
-    { path: '/', component: List },
+    { path: '/', component: Collection },
     { path: '/artifact/:id', name: 'artifact', component: ArtifactView, props: true },
     { path: '/upload', name: 'upload', component: UploadView },
     

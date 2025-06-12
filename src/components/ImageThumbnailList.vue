@@ -13,7 +13,7 @@ const selectedUrl = defineModel('selectedUrl');
             :src="url"
             :class="{ selected: selectedUrl === url }"
             v-on:click="selectedUrl = url"
-            class="thumbnail"
+            class="thumbnail clickable"
             />
         </div>
     </div>
@@ -32,23 +32,9 @@ const selectedUrl = defineModel('selectedUrl');
     gap: 10px;
 }
 
-.thumbnail {
-    flex-shrink: 0;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    /* overflow: hidden; */
-    cursor: pointer;
-    transition: transform 0.2s;
-}
 
-.thumbnail:hover {
-    transform: scale(1.05);
-}
 
-.thumbnail.selected {
-    border-color: #007BFF;
-}
+
+
+
 </style>

@@ -6,10 +6,11 @@ import ArtifactCardImage from './ArtifactCardImage.vue'
 <template>
   <section class="artifact-card">
     <ArtifactCardImage :artifact/>
-    <p v-if="artifact.num_rtis > 0" class="rti-badge">RTI</p>
+    <p v-if="artifact.RTICount > 0" class="rti-badge">RTI</p>
     <div class="card-info">
       <h3>{{ artifact.title }}</h3>
       <p>{{ artifact.date }}</p>
+      <p>{{ artifact.imageCount + artifact.RTICount }} images</p>
     </div>
   </section>
 </template>

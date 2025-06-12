@@ -1,39 +1,28 @@
 <script setup>
 const props = defineProps(['id', 'artifact'])
+
 import OpenLimeViewer from '../components/rti/OpenLimeViewer.vue'
 import ImageThumbnailList from '../components/ImageThumbnailList.vue';
 import ArtifactThumbnailList from '../components/ArtifactThumbnailList.vue';
-// import { getArtifact } from '../utils';
 import ArtifactForm from '../components/ArtifactForm.vue'
 import ArtifactDetails from '../components/ArtifactDetails.vue'
+import RTIThumbnail from '../components/RTIThumbnail.vue';
 
-import { ref, onMounted } from 'vue'
-
+import { ref, onMounted } from 'vue';
+import { fetchArtifact, updateArtifact } from '../backend.js';
 
 const artifact = ref()
 const selectedMedia = ref("")
 const isEditing = ref(false)
 
-async function getArtifact(id) {
-  try {
-    const res = await fetch(`http://localhost:8000/artifacts/${id}`)  // replace with your API URL
-    if (!res.ok) throw new Error('Failed to fetch artifact')
-    artifact.value = (await res.json()).artifact
-    selectedMedia.value = getDefaultMedia(artifact.value)
-  } catch (error) {
-    console.error(error)
-  }
-}
-// console.log('artifact:', artifact);
-// console.log(artifact.relightableMedia);
-onMounted(() => {
-  getArtifact(props.id)
+onMounted(async () => {
+  artifact.value = await fetchArtifact(props.id);
+  selectedMedia.value = getDefaultMedia(artifact.value);
 })
 
-
 function getDefaultMedia(artifact) {
-  if (artifact.relightableMedia.length > 0) {
-    return artifact.relightableMedia[0].url
+  if (artifact.RTIs.length > 0) {
+    return artifact.RTIs[0].url
   } else if (artifact.images.length > 0) {
     return artifact.images[0]
   } else {
@@ -51,44 +40,22 @@ async function handleSubmit(event, a) {
   console.log(artifact)
   
   event.preventDefault();
-  const formData = new FormData()
-  formData.append('metadata', JSON.strigify({
-    
-  }))
-  formData.append('title', a.title)
-  formData.append('description', a.description)
-  formData.append('creator', a.creator)
-  formData.append('date', a.date)
-  formData.append('copyright', a.copyright)
-  
-  console.log(a.images)
-  for (const file of a.images) {
-    formData.append('images', file) // Note: repeated key name for FastAPI List[UploadFile]
-  }
   
   try {
-    const response = await fetch(`http://localhost:8000/artifacts/${artifact.value.id}`, {
-      method: 'PUT',
-      body: formData
-    })
-    
-    if (response.ok) {  // true for 200–299 status codes
-      const data = await response.json()
-      console.log('Upload successful:', data)
-      isEditing.value = false
-      getArtifact(props.id)
-    } else {
-      console.log('Upload failed with status:', response.status)
-      // optionally parse error JSON:
-      try {
-        const errorData = await response.json()
-        console.log('Error details:', errorData)
-      } catch {
-        // no JSON body
-      }
-    }
+    console.log(a)
+    updateArtifact(a.id, {
+      metadata: {
+        title: a.title,
+        description: a.description,
+        creator: a.creator,
+        date: a.date,
+        copyright: a.copyright,
+      },
+    });
+    console.log('Upload successful:')
+    isEditing.value = false
   } catch (error) {
-    console.error('Upload failed:', error)
+    console.log(error)
   }
 }
 </script>
@@ -102,7 +69,7 @@ async function handleSubmit(event, a) {
     :creator="artifact.creator"
     :date="artifact.date"
     :copyright="artifact.copyright"
-    :rtis="artifact.relightableMedia"
+    :rtis="artifact.RTIs"
     :images="artifact.images"
     @submit="handleSubmit"
     >
@@ -117,7 +84,7 @@ async function handleSubmit(event, a) {
   <!-- <NewViewer :url="selectedMedia"/> -->
   
   <p>
-    Relightable Images ({{ artifact.relightableMedia.length }})
+    Relightable Images ({{ artifact.RTIs.length }})
     <!-- <a href="javascript:void(0) " onclick="document.getElementById('fileUpload').click()">Upload</a>
     <input 
     type="file" 
@@ -129,7 +96,7 @@ async function handleSubmit(event, a) {
   </p>
   <ArtifactThumbnailList
   v-model:selected="selectedMedia"
-  :media="artifact.relightableMedia"
+  :media="artifact.RTIs"
   />
   
   <ImageThumbnailList
