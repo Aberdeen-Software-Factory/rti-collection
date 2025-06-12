@@ -1,4 +1,5 @@
 <script setup>
+const id = defineModel('id', { default: ''})
 const title = defineModel('title', { default: '' })
 const description = defineModel('description', { default: '' })
 const creator = defineModel('creator', { default: '' })
@@ -12,7 +13,7 @@ const emit = defineEmits(['submit'])
 import OpenLimeViewer from '../components/rti/OpenLimeViewer.vue'
 import { ref, watch } from 'vue'
 import { patchFetchForFiles, restoreOriginalFetch } from '../components/patchFetchForFiles'
-
+import ArtifactRTI from '../components/ArtifactRTI.vue'
 import { reactive } from 'vue'
 
 // const artifact = reactive({
@@ -57,6 +58,8 @@ function onImageSelected(event) {
     images.value = [...images.value, ...files] // Add to existing
     event.target.value = null // Allow re-uploading same files if needed
 }
+
+
 
 function removeImage(index) {
     images.value.splice(index, 1)
@@ -178,14 +181,21 @@ function blobUrl(file) {
                     </div>
                 </td>
             </tr>
-            <!-- <tr>
-                <td colspan="2" style="text-align: right;">
-                    <button type="submit">Save</button>
-                </td>
-            </tr> -->
-        </tbody>
-    </table>
-    <slot></slot>
+            <tr>
+                <th><label for="images">Relightable Images</label></th>
+                <td>
+                    <ArtifactRTI :id :RTIs="rtis"/>
+                
+            </td>
+        </tr>
+        <!-- <tr>
+            <td colspan="2" style="text-align: right;">
+                <button type="submit">Save</button>
+            </td>
+        </tr> -->
+    </tbody>
+</table>
+<slot></slot>
 </form>
 </template>
 

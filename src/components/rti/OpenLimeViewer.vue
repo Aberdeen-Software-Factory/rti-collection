@@ -9,9 +9,9 @@ function initViewer(url) {
 	limeElement.value.replaceChildren();
 
 	if (url.endsWith('info.json')) {
-		initRTI('.openlime', url);
+		initRTI(limeElement.value, url);
 	} else if (url.endsWith('.jpg')) {
-		initJPG('.openlime', url);
+		initJPG(limeElement.value, url);
 	}
 }
 

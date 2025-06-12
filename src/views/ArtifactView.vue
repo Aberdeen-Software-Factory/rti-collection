@@ -52,6 +52,9 @@ async function handleSubmit(event, a) {
   
   event.preventDefault();
   const formData = new FormData()
+  formData.append('metadata', JSON.strigify({
+    
+  }))
   formData.append('title', a.title)
   formData.append('description', a.description)
   formData.append('creator', a.creator)
@@ -93,6 +96,7 @@ async function handleSubmit(event, a) {
 <template>
   <section v-if="isEditing">
     <ArtifactForm v-if="artifact"
+    :id="artifact.id"
     :title="artifact.title"
     :description="artifact.description"
     :creator="artifact.creator"

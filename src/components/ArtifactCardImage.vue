@@ -27,6 +27,9 @@ function getThumbnail(artifact) {
   width: 100%;
   aspect-ratio: 1 / 1;
   background-color: rgb(255, 255, 255, 0.2);
+
+  border: 1px solid rgb(0, 0, 0, 0.5);
+  box-sizing: border-box;
 }
 
 img {
@@ -36,6 +39,7 @@ img {
   transition: transform 0.3s ease;
   cursor: pointer;
   display: block;
+  
   /* border-radius removed here because wrapper handles it */
 }
 
