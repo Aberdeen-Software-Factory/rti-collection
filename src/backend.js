@@ -30,7 +30,7 @@ async function fetchArtifact(id) {
     }
 }
 
-async function updateArtifact(id, { metadata, images, RTIs }) {
+function assembleFormData({ metadata, images, RTIs }) {
     const formData = new FormData();
     console.log(metadata);
     if (metadata) {
@@ -54,7 +54,33 @@ async function updateArtifact(id, { metadata, images, RTIs }) {
     }
 
     console.log('FormData contents:', [...formData.entries()]);
-    // return;
+    return formData;
+}
+
+async function createArtifact({ metadata, images, RTIs }) {
+    const formData = assembleFormData({ metadata, images, RTIs });
+
+    try {
+        const res = await fetch(new URL('/artifacts', BACKEND), {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!res.ok) {
+            throw Error('Upload failed with status:', res.status);
+        }
+
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        console.error('Upload failed:', error);
+        throw error;
+    }
+}
+
+async function updateArtifact(id, { metadata, images, RTIs }) {
+    const formData = assembleFormData({ metadata, images, RTIs });
+
     try {
         const res = await fetch(new URL(`/artifacts/${id}`, BACKEND), {
             method: 'PUT',
@@ -73,4 +99,4 @@ async function updateArtifact(id, { metadata, images, RTIs }) {
     }
 }
 
-export { fetchArtifacts, fetchArtifact, updateArtifact }
+export { fetchArtifacts, fetchArtifact, createArtifact, updateArtifact }
