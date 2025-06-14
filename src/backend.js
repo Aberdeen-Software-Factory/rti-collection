@@ -42,7 +42,7 @@ function assembleFormData({ metadata, images, RTIs }) {
             formData.append('images', file);
         }
     }
-
+    
     if (RTIs) {
         for (const [i, RTI] of RTIs.entries()) {
             const RTIKey = `RTI_${i + 1}`;
@@ -52,51 +52,76 @@ function assembleFormData({ metadata, images, RTIs }) {
             }
         }
     }
-
+    
     console.log('FormData contents:', [...formData.entries()]);
     return formData;
 }
 
 async function createArtifact({ metadata, images, RTIs }) {
+    const username = '';
+    const password = prompt("Enter your password:");
+    const credentials = btoa(`${username}:${password}`);
+    
     const formData = assembleFormData({ metadata, images, RTIs });
-
-    try {
-        const res = await fetch(new URL('/artifacts', BACKEND), {
-            method: 'POST',
-            body: formData
-        });
-        
-        if (!res.ok) {
-            throw Error('Upload failed with status:', res.status);
-        }
-
-        const data = await res.json();
-        return data;
-    } catch (error) {
-        console.error('Upload failed:', error);
-        throw error;
+    
+    const res = await fetch(new URL('/artifacts', BACKEND), {
+        method: 'POST',
+        headers: {
+            'Authorization': `Basic ${credentials}`
+        },
+        body: formData,
+    });
+    
+    if (!res.ok) {
+        throw Error(`Upload failed with status: ${res.status}`);
     }
+    
+    const data = await res.json();
+    return data;
+    
 }
 
 async function updateArtifact(id, { metadata, images, RTIs }) {
+    const username = '';
+    const password = prompt("Enter your password:");
+    const credentials = btoa(`${username}:${password}`);
+    
     const formData = assembleFormData({ metadata, images, RTIs });
-
-    try {
-        const res = await fetch(new URL(`/artifacts/${id}`, BACKEND), {
-            method: 'PUT',
-            body: formData
-        });
-        
-        if (!res.ok) {
-            throw Error('Upload failed with status:', res.status);
-        }
-
-        const data = await res.json();
-        return data;
-    } catch (error) {
-        console.error('Upload failed:', error);
-        throw error;
+    
+    const res = await fetch(new URL(`/artifacts/${id}`, BACKEND), {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Basic ${credentials}`
+        },
+        body: formData
+    });
+    
+    if (!res.ok) {
+        throw Error('Upload failed with status:', res.status);
     }
+    
+    const data = await res.json();
+    return data;
 }
 
-export { fetchArtifacts, fetchArtifact, createArtifact, updateArtifact }
+async function deleteArtifact(id) {
+    const username = '';
+    const password = prompt("Enter your password:");
+    const credentials = btoa(`${username}:${password}`);
+    
+    const res = await fetch(new URL(`/artifacts/${id}`, BACKEND), {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Basic ${credentials}`
+        },
+    });
+    
+    if (!res.ok) {
+        throw Error('Upload failed with status:', res.status);
+    }
+    
+    const data = await res.json();
+    return data;
+}
+
+export { fetchArtifacts, fetchArtifact, createArtifact, updateArtifact, deleteArtifact }

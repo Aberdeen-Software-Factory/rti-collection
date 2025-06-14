@@ -6,7 +6,7 @@ import UploadView from './views/UploadView.vue'
 
 const routes = [
     { path: '/', component: CollectionView },
-    { path: '/artifact/:id', name: 'artifact', component: ArtifactView, props: true },
+    { path: '/artifacts/:id', name: 'artifact', component: ArtifactView, props: true },
     { path: '/upload', name: 'upload', component: UploadView },
     
 ]

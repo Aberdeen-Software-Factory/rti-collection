@@ -1,21 +1,30 @@
 <script setup>
 import ArtifactForm from '../components/ArtifactForm.vue';
 import { createArtifact } from '../backend.js';
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 async function handleSubmit(artifact) {
-    const res = await createArtifact({
-        metadata: {
-            title: artifact.title,
-            description: artifact.description,
-            creator: artifact.creator,
-            date: artifact.date,
-            copyright: artifact.copyright,
-        },
-        images: artifact.images,
-        RTIs: artifact.RTIs,
-    });
-
-    console.log(res);
+    try {
+        const res = await createArtifact({
+            metadata: {
+                title: artifact.title,
+                description: artifact.description,
+                creator: artifact.creator,
+                date: artifact.date,
+                copyright: artifact.copyright,
+            },
+            images: artifact.images,
+            RTIs: artifact.RTIs,
+        });
+        
+        console.log(res);
+        router.push("/");
+    } catch (error) {
+        console.log(error);
+        alert('Unable to upload artifact.')
+    }
 }
 </script>
 

@@ -3,7 +3,6 @@ import RelightViewer from './components/rti/RelightViewer.vue'
 import OpenLimeViewer from './components/rti/OpenLimeViewer.vue'
 import Collection from './components/Collection.vue'
 import Footer from './components/Footer.vue'
-import artifactList from './components/data.js'
 
 </script>
 

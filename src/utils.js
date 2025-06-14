@@ -1,12 +1,4 @@
-import artifactList from './components/data.js'
 
-function getArtifact(id) {
-    return artifactList.find(item => item.id === id);
-}
-
-function getArtifacts() {
-    return artifactList;
-}
 
 // async function fetchFiles(urls) {
 //   const responses = await Promise.all(urls.map(url => fetch(url)))
@@ -49,4 +41,4 @@ async function fetchFiles(urls) {
   return files
 }
 
-export { getArtifacts, getArtifact, fetchFiles }
+export { fetchFiles }

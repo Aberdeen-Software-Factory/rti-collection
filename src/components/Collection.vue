@@ -12,7 +12,7 @@ onMounted(async () => {
 
 <template>
   <div class="main">
-    <RouterLink v-for="(artifact, index) in artifacts" :to="`/artifact/${artifact.id}`">
+    <RouterLink v-for="(artifact, index) in artifacts" :to="`/artifacts/${artifact.id}`">
       <ArtifactCard :key="index" :artifact="artifact"/>
     </RouterLink>
   </div>

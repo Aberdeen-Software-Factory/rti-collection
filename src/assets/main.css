@@ -19,6 +19,7 @@ main {
     box-sizing: border-box;
     transition: 100ms;
     white-space: auto;
+    object-fit: cover;
 }
 
 .thumbnail.clickable {

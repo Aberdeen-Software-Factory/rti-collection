@@ -9,8 +9,11 @@ import ArtifactDetails from '../components/ArtifactDetails.vue'
 import RTIThumbnail from '../components/RTIThumbnail.vue';
 
 import { ref, onMounted } from 'vue';
-import { fetchArtifact, updateArtifact } from '../backend.js';
+import { fetchArtifact, updateArtifact, deleteArtifact } from '../backend.js';
 import { fetchFiles } from '../utils.js';
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const artifact = ref()
 const selectedMedia = ref("")
@@ -58,7 +61,16 @@ async function onEditClicked() {
   isEditing.value = !isEditing.value
 }
 
-
+async function onDeleteClicked() {
+  if (confirm("Are you sure you want to delete this artifact? This action cannot be undone.")) {
+    try {
+      await deleteArtifact(artifact.value.id);
+      router.push('/');
+    } catch {
+      alert("Unable to delete artifact.");
+    }
+  }
+}
 
 async function handleSubmit(a) {
   console.log(a)
@@ -148,6 +160,7 @@ async function handleSubmit(a) {
   />
   <br/>
   <button @click="onEditClicked">Edit</button>
+  <button @click="onDeleteClicked">Delete</button>
 </div>
 </template>
 
