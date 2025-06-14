@@ -13,11 +13,6 @@ import artifactList from './components/data.js'
     <!-- <RelightViewer url="test/bilinear18" /> -->
     <!-- <RelightViewer url="test-image" /> -->
      <!-- <OpenLimeViewer url="test-image"/> -->
-      <p>
-    <strong>Current route path:</strong> {{ $route.fullPath }}
-  </p>
-  <RouterLink to="/">Collection</RouterLink>
-  <RouterLink to="/upload">Upload</RouterLink>
   <RouterView/>
     <!-- <ArtifactDetail v-bind:artifact="artifactList[0]"/> -->
      <!-- <OpenLimeThumbnail url="test/ptm"/>

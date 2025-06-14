@@ -91,6 +91,7 @@ async function handleSubmit(a) {
 </script>
 
 <template>
+  <RouterLink to="/">Back to Collection</RouterLink>
   <section v-if="isEditing">
     <ArtifactForm v-if="artifact"
     :defaultValues="{
@@ -151,5 +152,11 @@ async function handleSubmit(a) {
 </template>
 
 <style scoped>
+a {
+  color: inherit;
+}
 
+a:hover {
+  text-decoration: none;
+}
 </style>

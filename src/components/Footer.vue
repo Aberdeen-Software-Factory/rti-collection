@@ -22,6 +22,7 @@ footer {
 
 div {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     justify-content: left;
     gap: 40px;

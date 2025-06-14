@@ -25,7 +25,7 @@ function getThumbnail(artifact) {
   align-items: center;
   /* border-radius: 5px; */
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1.3 / 1;
   background-color: rgb(255, 255, 255, 0.2);
 
   border: 1px solid rgb(0, 0, 0, 0.5);

@@ -8,7 +8,7 @@ import ArtifactCardImage from './ArtifactCardImage.vue'
     <ArtifactCardImage :artifact/>
     <p v-if="artifact.RTICount > 0" class="rti-badge">RTI</p>
     <div class="card-info">
-      <h3>{{ artifact.title }}</h3>
+      <h3>{{ artifact.title == '' ? '--' : artifact.title }}</h3>
       <p>{{ artifact.date }}</p>
       <p>{{ artifact.imageCount + artifact.RTICount }} images</p>
     </div>
@@ -17,33 +17,28 @@ import ArtifactCardImage from './ArtifactCardImage.vue'
 
 <style scoped>
 .artifact-card {
+  height: 100%;
   position: relative;
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  gap: 10px;
-  box-sizing: content-box;
-  /* border-radius:10px; */
-  /* box-shadow: 0 0 5px #ddd; */
-  text-align: left;
-  background-color: rgba(0, 0, 0, 0);
+  /* background-color: white; */
   cursor: pointer;
+  /* overflow: hidden; */
+  z-index: 0;
+  transition: box-shadow 0.3s ease;
 }
+
 .artifact-card::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0, 0, 0, 0.2);
-  z-index: 0;
-  transform: scale(1);         /* initial scale */
-  transition: transform 0.1s ease, opacity 0.1s ease;
-  opacity: 0;                  /* hidden by default */
-  pointer-events: none;        /* let mouse events pass through */
+  inset: -10px; /* expands evenly in all directions */
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: -1; /* put it behind the content */
 }
 
 .artifact-card:hover::before {
-  transform: scale(1.1);       /* "expand" background visually */
-  opacity: 1;                  /* fade in */
+  opacity: 1;
 }
 /* .artifact-card:hover {
 border: 0cap;

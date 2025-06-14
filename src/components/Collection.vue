@@ -12,12 +12,9 @@ onMounted(async () => {
 
 <template>
   <div class="main">
-    <ArtifactCard
-    v-for="(artifact, index) in artifacts"
-    :key="index"
-    :artifact="artifact"
-    @click="() => $router.push({ name: 'artifact', params: { id: artifact.id } })"
-    />
+    <RouterLink v-for="(artifact, index) in artifacts" :to="`/artifact/${artifact.id}`">
+      <ArtifactCard :key="index" :artifact="artifact"/>
+    </RouterLink>
   </div>
 </template>
 
@@ -27,6 +24,11 @@ onMounted(async () => {
   display:grid;
   grid-template-columns: 1fr;
   gap:40px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 @media (min-width:414px){
