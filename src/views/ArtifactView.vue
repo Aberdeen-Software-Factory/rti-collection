@@ -10,10 +10,14 @@ import RTIThumbnail from '../components/RTIThumbnail.vue';
 
 import { ref, onMounted } from 'vue';
 import { fetchArtifact, updateArtifact } from '../backend.js';
+import { fetchFiles } from '../utils.js';
 
 const artifact = ref()
 const selectedMedia = ref("")
 const isEditing = ref(false)
+
+const imageFiles = ref([])
+const RTIFiles = ref([])
 
 onMounted(async () => {
   artifact.value = await fetchArtifact(props.id);
@@ -35,15 +39,36 @@ function getThumbnailUrl(path) {
   return new URL(path, "http://localhost:8000/files").toString(); //TODO add the prefix to the openlimeviewer component
 }
 
-async function handleSubmit(event, a) {
+async function onEditClicked() {
+  // Download RTI files
+  const RTIs = [];
+  
+  for (const rti of artifact.value.RTIs) {
+    const files = await fetchFiles(rti.files.map(filename => `http://localhost:8000/files/artifacts/${artifact.value.id}/RTIs/${rti.id}/${filename}`))
+    RTIs.push(files)
+  }
+  
+  RTIFiles.value = RTIs;
+  
+  // Download image files
+  const images = await fetchFiles(artifact.value.images);
+  
+  imageFiles.value = images;
+  
+  isEditing.value = !isEditing.value
+}
+
+
+
+async function handleSubmit(a) {
   console.log(a)
   console.log(artifact)
   
-  event.preventDefault();
+  // event.preventDefault();
   
   try {
     console.log(a)
-    updateArtifact(a.id, {
+    const res = await updateArtifact(a.id, {
       metadata: {
         title: a.title,
         description: a.description,
@@ -51,9 +76,14 @@ async function handleSubmit(event, a) {
         date: a.date,
         copyright: a.copyright,
       },
+      images: a.images,
+      RTIs: a.RTIs,
     });
-    console.log('Upload successful:')
+    console.log(res);
     isEditing.value = false
+    
+    artifact.value = await fetchArtifact(props.id);
+    selectedMedia.value = getDefaultMedia(artifact.value);
   } catch (error) {
     console.log(error)
   }
@@ -63,14 +93,17 @@ async function handleSubmit(event, a) {
 <template>
   <section v-if="isEditing">
     <ArtifactForm v-if="artifact"
-    :id="artifact.id"
-    :title="artifact.title"
-    :description="artifact.description"
-    :creator="artifact.creator"
-    :date="artifact.date"
-    :copyright="artifact.copyright"
-    :rtis="artifact.RTIs"
-    :images="artifact.images"
+    :defaultValues="{
+      id: artifact.id,
+      title: artifact.title,
+      description: artifact.description,
+      creator: artifact.creator,
+      date: artifact.date,
+      copyright: artifact.copyright,
+      
+      images: imageFiles,
+      RTIs: RTIFiles,
+    }"
     @submit="handleSubmit"
     >
     <button @click="isEditing = false">Cancel</button>
@@ -113,7 +146,7 @@ async function handleSubmit(event, a) {
   :copyright="artifact.copyright"
   />
   <br/>
-  <button @click="isEditing = !isEditing">Edit</button>
+  <button @click="onEditClicked">Edit</button>
 </div>
 </template>
 
