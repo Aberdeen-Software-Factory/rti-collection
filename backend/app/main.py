@@ -20,7 +20,7 @@ origins = [
     "http://localhost:5173",  # Vue dev server
     "http://localhost:3000",
     "http://127.0.0.1:60054",
-    "https://zsoltkebel.github.io/",
+    "https://zsoltkebel.github.io",
     # add other allowed origins if needed
 ]
 
