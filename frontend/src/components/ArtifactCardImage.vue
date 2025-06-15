@@ -13,7 +13,7 @@ function getThumbnail(artifact) {
 <template>
   <!-- <img v-bind:src="getThumbnail(artifact)"/> -->
    <div class="img-wrapper">
-    <img :src="'http://localhost:8000' + artifact.thumbnail"/>
+    <img :src="artifact.thumbnail"/>
   </div>
 </template>
 

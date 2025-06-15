@@ -6,7 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/rti-project/',
+  // base: '/rti-project/',
   plugins: [
     vue(),
     vueDevTools(),

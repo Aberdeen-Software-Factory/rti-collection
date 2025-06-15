@@ -1,14 +1,16 @@
 import { Artifact, ArtifactPreview } from "./model/artifact";
 
-const BACKEND = new URL('http://localhost:8000')
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+console.log("Base url:", API_BASE_URL);
 
 async function fetchArtifacts() {
     try {
-        const res = await fetch(new URL('/artifacts', BACKEND));
+        const res = await fetch(new URL('/artifacts', API_BASE_URL));
         
         if (!res.ok) throw new Error('Failed to fetch artifacts');
         
         const data = await res.json();
+        console.log(data)
         return data.artifacts.map(obj => new ArtifactPreview(obj));
     } catch (error) {
         console.error(error);
@@ -18,7 +20,7 @@ async function fetchArtifacts() {
 
 async function fetchArtifact(id) {
     try {
-        const res = await fetch(new URL(`/artifacts/${id}`, BACKEND));
+        const res = await fetch(new URL(`/artifacts/${id}`, API_BASE_URL));
         
         if (!res.ok) throw new Error(`Failed to fetch artifact with id ${id}`);
         
@@ -64,7 +66,7 @@ async function createArtifact({ metadata, images, RTIs }) {
     
     const formData = assembleFormData({ metadata, images, RTIs });
     
-    const res = await fetch(new URL('/artifacts', BACKEND), {
+    const res = await fetch(new URL('/artifacts', API_BASE_URL), {
         method: 'POST',
         headers: {
             'Authorization': `Basic ${credentials}`
@@ -88,7 +90,7 @@ async function updateArtifact(id, { metadata, images, RTIs }) {
     
     const formData = assembleFormData({ metadata, images, RTIs });
     
-    const res = await fetch(new URL(`/artifacts/${id}`, BACKEND), {
+    const res = await fetch(new URL(`/artifacts/${id}`, API_BASE_URL), {
         method: 'PUT',
         headers: {
             'Authorization': `Basic ${credentials}`
@@ -109,7 +111,7 @@ async function deleteArtifact(id) {
     const password = prompt("Enter your password:");
     const credentials = btoa(`${username}:${password}`);
     
-    const res = await fetch(new URL(`/artifacts/${id}`, BACKEND), {
+    const res = await fetch(new URL(`/artifacts/${id}`, API_BASE_URL), {
         method: 'DELETE',
         headers: {
             'Authorization': `Basic ${credentials}`
