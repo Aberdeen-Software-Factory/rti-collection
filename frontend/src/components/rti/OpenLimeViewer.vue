@@ -43,7 +43,7 @@ function initRTI(viewer, path) {
 	});
 	
 	lime.canvas.addLayer('RTI', layer); 
-	OpenLIME.Skin.setUrl(new URL('openlime/skin.svg', window.location.origin).toString());
+	OpenLIME.Skin.setUrl(new URL('/rti-project/openlime/skin.svg', window.location.origin).toString());
 	// OpenLIME.Skin.setUrl('openlime/skin.svg');
 
 	let ui = new OpenLIME.UIBasic(lime, {
