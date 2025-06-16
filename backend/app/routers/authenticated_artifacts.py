@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Form, UploadFile, File, Path, Request, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Union
-from app.utils.utils import upload_files
+from ..utils.filesys import upload_files
 import uuid
 import os
 import shutil
@@ -46,6 +46,7 @@ async def create_artifact(
     await update_RTIs(artifact_id, RTIKeys, request)
 
     return JSONResponse({"artifact_id": artifact_id, "message": "Upload successful"})
+
 
 @authenticated_router.put("/{artifact_id}")
 async def update_artifact(
