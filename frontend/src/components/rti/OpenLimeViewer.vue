@@ -3,6 +3,8 @@
 const props = defineProps(['url']);
 import { ref, onMounted, watch } from 'vue';
 
+const REPO_NAME = import.meta.env.VITE_REPO_NAME
+
 let limeElement = ref();
 
 function initViewer(url) {
@@ -43,7 +45,7 @@ function initRTI(viewer, path) {
 	});
 	
 	lime.canvas.addLayer('RTI', layer); 
-	OpenLIME.Skin.setUrl(new URL('/rti-project/openlime/skin.svg', window.location.origin).toString());
+	OpenLIME.Skin.setUrl(new URL(`${REPO_NAME}/openlime/skin.svg`, window.location.origin).toString());
 	// OpenLIME.Skin.setUrl('openlime/skin.svg');
 
 	let ui = new OpenLIME.UIBasic(lime, {

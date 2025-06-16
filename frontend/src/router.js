@@ -11,8 +11,10 @@ const routes = [
     
 ]
 
+const REPO_NAME = import.meta.env.VITE_REPO_NAME
+
 const router = createRouter({
-    history: createWebHistory('/rti-project/'),
+    history: createWebHistory(REPO_NAME),
     routes,
 })
 
