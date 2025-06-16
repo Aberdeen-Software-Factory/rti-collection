@@ -1,14 +1,14 @@
 <script setup>
 const props = defineProps(['rti', 'selected']);
 
-function getThumbnailURL(path) {
-    return new URL(path, "http://localhost:8000/").toString();
+function getThumbnailURL(rti) {
+    return rti.files.find(url => url.endsWith('plane_0.jpg'))
 }
 </script>
 
 <template>
     <div class="thumbnail clickable">
-        <img v-if="rti.thumbnail" :src="getThumbnailURL(rti.thumbnail)"/>
+        <img v-if="getThumbnailURL(rti)" :src="getThumbnailURL(rti)"/> <!-- TODO: Inefficient double function call -->
         <div v-else class="placeholder-container">
             <p>RTI Image</p>
             <p class="id">No Preview</p>
@@ -18,8 +18,6 @@ function getThumbnailURL(path) {
 </template>
 
 <style scoped>
-
-
 .placeholder-container {
     padding: 5px;
     overflow-wrap: anywhere;

@@ -70,31 +70,17 @@ function blobUrl(file) {
             </div>
         </div>
         
+        <!-- RTI upload -->
         <div class="form-row">
-            <label class="form-label" for="description">Description</label>
+            <label class="form-label" for="RTIs">RTIs</label>
             <div class="form-field">
-                <textarea id="description" v-model="artifact.description" rows="3"></textarea>
-            </div>
-        </div>
-        
-        <div class="form-row">
-            <label class="form-label" for="creator">Creator</label>
-            <div class="form-field">
-                <input id="creator" v-model="artifact.creator" type="text" />
-            </div>
-        </div>
-        
-        <div class="form-row">
-            <label class="form-label" for="date">Date</label>
-            <div class="form-field">
-                <input id="date" v-model="artifact.date" type="text" />
-            </div>
-        </div>
-        
-        <div class="form-row">
-            <label class="form-label" for="copyright">Copyright</label>
-            <div class="form-field">
-                <input id="copyright" v-model="artifact.copyright" type="text" />
+                <input id="RTIs" type="file" multiple @change="onRTISelected"/>
+                <div class="thumbnail-list" v-if="artifact.RTIs.length">
+                    <div class="thumb" v-for="(files, index) in artifact.RTIs" :key="index" @click="removeRTI(index)" title="Click to remove">
+                        <p>{{ files.length }} files</p>
+                        <img :src="blobUrl(getPlane0(files))" />
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -121,28 +107,32 @@ function blobUrl(file) {
             </div>
         </div>
     </div>
-    <!-- RTI upload -->
+    
     <div class="form-row">
-        <label class="form-label" for="RTIs">RTIs</label>
+        <label class="form-label" for="description">Description</label>
         <div class="form-field">
-            <input
-            id="RTIs"
-            type="file"
-            multiple
-            @change="onRTISelected"
-            />
-            <div class="thumbnail-list" v-if="artifact.RTIs.length">
-                    <div
-                    class="thumb"
-                    v-for="(files, index) in artifact.RTIs"
-                    :key="index"
-                    @click="removeRTI(index)"
-                    title="Click to remove"
-                    >
-                    <p>{{ files.length }} files</p>
-                    <img :src="blobUrl(getPlane0(files))" />
-                </div>
-            </div>
+            <textarea id="description" v-model="artifact.description" rows="3"></textarea>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <label class="form-label" for="creator">Creator</label>
+        <div class="form-field">
+            <input id="creator" v-model="artifact.creator" type="text" />
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <label class="form-label" for="date">Date</label>
+        <div class="form-field">
+            <input id="date" v-model="artifact.date" type="text" />
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <label class="form-label" for="copyright">Copyright</label>
+        <div class="form-field">
+            <input id="copyright" v-model="artifact.copyright" type="text" />
         </div>
     </div>
     
