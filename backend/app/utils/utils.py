@@ -10,6 +10,9 @@ def find_first_thumbnail_in(dir: Path) -> Path | None:
     for thumb_path in dir.rglob("thumbnail.jpg"):
         return thumb_path
 
+def find_first_in(dir: Path, filename: str) -> Path | None: # TODO rewrite so that it aceopts a list of filenames and tries in order until first match is found
+    for thumb_path in dir.rglob(filename):
+        return thumb_path
 
 def upload_files(dest: str, files: list[UploadFile]):
     for file in files:

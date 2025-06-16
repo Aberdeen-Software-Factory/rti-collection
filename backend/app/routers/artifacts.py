@@ -7,9 +7,9 @@ import shutil
 import json
 from ..utils.paths import ARTIFACTS_DIR
 from urllib.parse import urljoin
-from ..utils.utils import find_first_thumbnail_in
+from ..utils.utils import find_first_thumbnail_in, find_first_in
 from ..utils.paths import path_to_artifact_images
-
+import pathlib
 
 router = APIRouter(
     prefix="/artifacts",
@@ -52,6 +52,8 @@ async def read_artifacts(
         # artifact = get_artifact_preview(artifact_id, base_url=str(request.base_url))
 
         thumbnail_path = find_first_thumbnail_in(artifact_path)
+        if thumbnail_path is None:
+            thumbnail_path = find_first_in(artifact_path, "plane_0.jpg")
         if thumbnail_path is not None:
             thumbnail_path = str(request.url_for("artifacts", path=str(thumbnail_path.relative_to(ARTIFACTS_DIR)))) # TODO put this into a function to avoid repetition
 
@@ -89,10 +91,13 @@ async def get_artifact(
         metadata = {}
 
     # Collect all image files at root level
-    images = [str(request.url_for("artifacts", path=str(img_path.relative_to(ARTIFACTS_DIR)))) for img_path in path_to_artifact_images(artifact_id).iterdir() if img_path.is_file()]
+    try:
+        images = [str(request.url_for("artifacts", path=str(img_path.relative_to(ARTIFACTS_DIR)))) for img_path in path_to_artifact_images(artifact_id).iterdir() if img_path.is_file()]
+    except FileNotFoundError:
+        images = []
 
     # Collect RTI relightable media
-    relightable_media = get_relightable_images(artifact_id, base_url=str(request.base_url))
+    relightable_media = get_relightable_images(artifact_id, request, base_url=str(request.base_url))
 
     artifact = {
         "id": artifact_id,
@@ -134,7 +139,7 @@ def count_items_in_dir(dir):
     except FileNotFoundError:
         return 0
 
-def get_relightable_images(artifact_id, base_url=""):
+def get_relightable_images(artifact_id, request: Request, base_url=""):
     relightable_media = []
     RTIs_dir = os.path.join(ARTIFACTS_DIR, artifact_id, "RTIs")
 
@@ -146,19 +151,15 @@ def get_relightable_images(artifact_id, base_url=""):
         if os.path.isdir(subdir_path) and is_rti_dir(subdir_path):
             info_url = os.path.join(subdir_path, "info.json")
             
-            thumbnail_path = os.path.join(subdir_path, "thumbnail.jpg")
-            if os.path.exists(thumbnail_path):
-                thumbnail_url = f"/files/artifacts/{artifact_id}/RTIs/{subdir_name}/thumbnail.jpg"
-            else:
-                fallback_thumb_path = os.path.join(subdir_path, f"{subdir_name}.jpg")
-                if os.path.exists(fallback_thumb_path):
-                    thumbnail_url = f"/files/artifacts/{artifact_id}/RTIs/{subdir_name}/{subdir_name}.jpg"
-                else:
-                    thumbnail_url = None
+            thumbnail_url = find_first_thumbnail_in(pathlib.Path(subdir_path))
+            if thumbnail_url is None:
+                thumbnail_url = find_first_in(pathlib.Path(subdir_path), "plane_0.jpg")
+            if thumbnail_url is not None:
+                thumbnail_url = str(request.url_for("artifacts", path=str(thumbnail_url.relative_to(ARTIFACTS_DIR)))) # TODO put this into a function to avoid repetition
 
             files = []
-            for filename in os.listdir(subdir_path):
-                files.append(filename)
+            for filename in pathlib.Path(subdir_path).iterdir():
+                files.append(str(request.url_for("artifacts", path=str(filename.relative_to(ARTIFACTS_DIR)))))
             
             relightable_entry = {
                 "id": subdir_name,

@@ -47,7 +47,7 @@ async function onEditClicked() {
   const RTIs = [];
   
   for (const rti of artifact.value.RTIs) {
-    const files = await fetchFiles(rti.files.map(filename => `http://localhost:8000/files/artifacts/${artifact.value.id}/RTIs/${rti.id}/${filename}`))
+    const files = await fetchFiles(rti.files)
     RTIs.push(files)
   }
   
@@ -126,7 +126,7 @@ async function handleSubmit(a) {
 <div v-if="artifact && !isEditing">
   <h1>{{ artifact.title }}</h1>
   
-  <OpenLimeViewer :url="getThumbnailUrl(selectedMedia)"/> 
+  <OpenLimeViewer :url="selectedMedia"/> 
   <!-- <NewViewer :url="selectedMedia"/> -->
   
   <p>
