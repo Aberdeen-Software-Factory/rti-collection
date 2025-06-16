@@ -47,6 +47,11 @@ async function handleSubmit(event) {
     event.preventDefault();
 }
 
+function getPlane0(files) {
+    console.log(files)
+    return files.find(file => file.name === 'plane_0.jpg');
+}
+
 function blobUrl(file) {
     if (file instanceof File) {
         return URL.createObjectURL(file);
@@ -135,7 +140,7 @@ function blobUrl(file) {
                     title="Click to remove"
                     >
                     <p>{{ files.length }} files</p>
-                    <!-- <img :src="blobUrl(file)" :alt="file.name" /> -->
+                    <img :src="blobUrl(getPlane0(files))" />
                 </div>
             </div>
         </div>
