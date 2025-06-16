@@ -1,9 +1,8 @@
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Path
-from fastapi.responses import JSONResponse
-from typing import List, Union
+from fastapi import FastAPI, UploadFile, File, HTTPException, Path
+from fastapi.staticfiles import StaticFiles
+
 import uuid
 import os
-import json
 import shutil
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import artifacts
@@ -19,8 +18,7 @@ app.include_router(secret.authenticated_router)
 origins = [
     "http://localhost:5173",  # Vue dev server
     "http://localhost:3000",
-    "http://127.0.0.1:60054",
-    "https://zsoltkebel.github.io",
+    "https://aberdeen-software-factory.github.io",
     # add other allowed origins if needed
 ]
 
@@ -39,7 +37,6 @@ def artifact_dir(id):
     return os.path.join(ARTIFACTS_DIR, id)
 
 
-from fastapi.staticfiles import StaticFiles
 app.mount("/uploads/artifacts", StaticFiles(directory=ARTIFACTS_DIR), name="artifacts")
 
 
