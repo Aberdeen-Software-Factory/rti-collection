@@ -1,13 +1,15 @@
-from fastapi import APIRouter, Form, UploadFile, File, Path, Request, HTTPException
+from fastapi import APIRouter, Form, UploadFile, File, Path, Request, HTTPException, Query
 from fastapi.responses import JSONResponse
 from typing import List, Union
-from app.utils.utils import upload_files, get_artifact_preview
 import uuid
 import os
 import shutil
 import json
 from ..utils.paths import ARTIFACTS_DIR
 from urllib.parse import urljoin
+from ..utils.utils import find_first_thumbnail_in
+from ..utils.paths import path_to_artifact_images
+
 
 router = APIRouter(
     prefix="/artifacts",
@@ -18,53 +20,59 @@ router = APIRouter(
 
 
 @router.get("/")
-async def read_artifacts(request: Request):
+async def read_artifacts(
+    request: Request,
+    # page_number: int = Query(1, alias="page[number]"),
+    # page_size: int = Query(50, alias="page[size]")
+):
     artifacts = []
 
-    if not os.path.exists(ARTIFACTS_DIR):
+    if not ARTIFACTS_DIR.exists():
         return JSONResponse(content={"artifacts": []})
 
-    for artifact_id in os.listdir(ARTIFACTS_DIR):
-        print("checking", artifact_id)
-        artifact_dir = os.path.join(ARTIFACTS_DIR, artifact_id)
-
-        if not os.path.isdir(artifact_dir):
-            continue
-
-        metadata_file = os.path.join(artifact_dir, "metadata.json")
-        if not os.path.exists(metadata_file):
-            continue
-
+    sorted_entries = sorted(
+        ARTIFACTS_DIR.iterdir(),
+        key=lambda p: p.stat().st_ctime,
+        reverse=True
+    )
+    
+    for artifact_path in sorted_entries:
+        print("checking", artifact_path.name)
+        
+        metadata_path = artifact_path / "metadata.json"
         try:
-            with open(metadata_file, "r") as f:
-                metadata = json.load(f)
-        except json.JSONDecodeError:
-            continue
+            metadata = json.loads(metadata_path.read_text())
+        except (FileNotFoundError, json.JSONDecodeError):
+            metadata = {}
 
-        num_images = count_items_in_dir(os.path.join(artifact_dir, "images"))
-        num_rtis = count_items_in_dir(os.path.join(artifact_dir, "RTIs"))  # TODO rename rti to rtis
+        # num_images = count_items_in_dir(os.path.join(artifact_dir, "images"))
+        # num_rtis = count_items_in_dir(os.path.join(artifact_dir, "RTIs"))  # TODO rename rti to rtis
 
-        artifact = get_artifact_preview(artifact_id, base_url=str(request.base_url))
+        
+        # artifact = get_artifact_preview(artifact_id, base_url=str(request.base_url))
 
+        thumbnail_path = find_first_thumbnail_in(artifact_path)
+        if thumbnail_path is not None:
+            thumbnail_path = str(request.url_for("artifacts", path=str(thumbnail_path.relative_to(ARTIFACTS_DIR)))) # TODO put this into a function to avoid repetition
 
         # Build the artifact JSON
-        # artifact = {
-        #     "id": artifact_id,
-        #     "title": metadata.get("title", ""),
-        #     "description": metadata.get("description", ""),
-        #     "creator": metadata.get("creator", "Unknown"),
-        #     "date": metadata.get("date", ""),
-        #     "copyright": metadata.get("copyright", ""),
-        #     "tags": metadata.get("tags", []),
-        #     "num_images": num_images,
-        #     "num_rtis": num_rtis,
-        #     "thumbnail": thumbnail_file.replace("uploads", "/files"),
-        # }
+        artifact = {
+            "id": artifact_path.name,
+            "title": metadata.get("title", ""),
+            "description": metadata.get("description", ""),
+            "creator": metadata.get("creator", "Unknown"),
+            "date": metadata.get("date", ""),
+            "copyright": metadata.get("copyright", ""),
+            "tags": metadata.get("tags", []),
+            # "num_images": num_images,
+            # "num_rtis": num_rtis,
+            # "URL": str(request.url_for("artifacts", path=str(artifact_path.relative_to(ARTIFACTS_DIR)))),
+            "thumbnailURL": thumbnail_path,
+        }
 
         artifacts.append(artifact)
 
     return {"artifacts": artifacts}
-
 
 
 @router.get("/{artifact_id}")
@@ -72,117 +80,28 @@ async def get_artifact(
     request: Request,
     artifact_id: str = Path(..., regex=r"^[\w\-]+$"),
 ):
-    artifact_dir = os.path.join(ARTIFACTS_DIR, artifact_id)
-    metadata_file = os.path.join(artifact_dir, 'metadata.json')
+    artifact_path = ARTIFACTS_DIR / artifact_id
+
+    metadata_path = artifact_path / "metadata.json"
+    try:
+        metadata = json.loads(metadata_path.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        metadata = {}
 
     # Collect all image files at root level
-    images = [urljoin(str(request.base_url), img_path) for img_path in read_images(artifact_id)]
+    images = [str(request.url_for("artifacts", path=str(img_path.relative_to(ARTIFACTS_DIR)))) for img_path in path_to_artifact_images(artifact_id).iterdir() if img_path.is_file()]
 
     # Collect RTI relightable media
     relightable_media = get_relightable_images(artifact_id, base_url=str(request.base_url))
 
-    metadata = {}
-    try:
-        with open(metadata_file) as f:
-            metadata = json.load(f)
-    except json.JSONDecodeError:
-        pass
-
-    print(metadata)
     artifact = {
         "id": artifact_id,
         **metadata,
-        "images": images,
-        "relightableMedia": relightable_media,
+        "imageURLs": images,
+        "RTIs": relightable_media,
     }
     
     return { "artifact": artifact }
-
-
-def put_images(dir, images: list[Union[UploadFile, str]]):
-    os.makedirs(dir, exist_ok=True)
-
-    # Save images
-    images_to_keep = [os.path.basename(image) for image in images if isinstance(image, str)]
-    
-    # Delete files
-    for filename in os.listdir(dir):
-        if filename not in images_to_keep:
-            file_path = os.path.join(dir, filename)
-            try:
-                os.remove(file_path)
-                print(f"Deleted: {filename}")
-            except Exception as e:
-                print(f"Error deleting {filename}: {e}")
-
-    # Add new image files
-    for image_file in images:
-        if not isinstance(image_file, str):
-            image_path = os.path.join(dir, image_file.filename)
-            with open(image_path, "wb") as buffer:
-                shutil.copyfileobj(image_file.file, buffer)
-                print(f"Added: {image_file.filename}")
-
-
-
-
-@router.post("/rti")
-async def upload_relight(
-    metadata: str = Form(...),
-    files: List[UploadFile] = File(...)
-):
-    # Generate a unique folder for this upload
-    artifact_id = str(uuid.uuid4())
-    rti_id = str(uuid.uuid4())
-    artifact_folder = os.path.join(ARTIFACTS_DIR, artifact_id)
-    relight_folder = os.path.join(artifact_folder, 'rti', rti_id)
-    os.makedirs(relight_folder, exist_ok=True)
-
-    # Save metadata JSON
-    try:
-        metadata_dict = json.loads(metadata)
-    except json.JSONDecodeError:
-        return JSONResponse(status_code=400, content={"error": "Invalid metadata JSON"})
-
-    with open(os.path.join(artifact_folder, "metadata.json"), "w") as f:
-        json.dump(metadata_dict, f, indent=2)
-
-    # Save uploaded files
-    for file in files:
-        file_path = os.path.join(relight_folder, file.filename)
-        with open(file_path, "wb") as f:
-            shutil.copyfileobj(file.file, f)
-
-    return {"artifact_id": artifact_id, "message": "Upload successful"}
-
-@router.post("/{artifact_id}/rti")
-async def upload_relight(
-    artifact_id: str = Path(..., regex=r"^[\w\-]+$"),
-    metadata: str = Form(...),
-    files: List[UploadFile] = File(...)
-):
-    # Generate a unique folder for this upload
-    rti_id = str(uuid.uuid4())
-    artifact_folder = os.path.join(ARTIFACTS_DIR, artifact_id)
-    relight_folder = os.path.join(artifact_folder, 'rti', rti_id)
-    os.makedirs(relight_folder, exist_ok=True)
-
-    # Save metadata JSON
-    try:
-        metadata_dict = json.loads(metadata)
-    except json.JSONDecodeError:
-        return JSONResponse(status_code=400, content={"error": "Invalid metadata JSON"})
-
-    with open(os.path.join(artifact_folder, "metadata.json"), "w") as f:
-        json.dump(metadata_dict, f, indent=2)
-
-    # Save uploaded files
-    for file in files:
-        file_path = os.path.join(relight_folder, file.filename)
-        with open(file_path, "wb") as f:
-            shutil.copyfileobj(file.file, f)
-
-    return {"artifact_id": artifact_id, "message": "Upload successful"}
 
 
 @router.delete("/{artifact_id}/rti/{rti_id}")
@@ -204,25 +123,9 @@ async def delete_rti(
 
 # Utils
 
-def is_image_file(filename):
-    return any(filename.lower().endswith(ext) for ext in [".jpg", ".jpeg", ".png", ".gif"])
-
 def is_rti_dir(path):
     return os.path.exists(os.path.join(path, "info.json"))
 
-def read_images(artifact_id):
-    artifact_dir = os.path.join(ARTIFACTS_DIR, artifact_id)
-    images_dir = os.path.join(artifact_dir, "images")
-    images = []
-
-    if not os.path.exists(images_dir) or not os.path.isdir(images_dir):
-        return images
-    
-    for file_name in os.listdir(images_dir):
-        file_path = os.path.join(images_dir, file_name)
-        if os.path.isfile(file_path) and is_image_file(file_name):
-            images.append(file_path)  # TODO how should returned url look?
-    return images
 
 def count_items_in_dir(dir):
     try:

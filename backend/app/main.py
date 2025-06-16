@@ -44,30 +44,6 @@ app.mount("/uploads/artifacts", StaticFiles(directory=ARTIFACTS_DIR), name="arti
 
 
 
-
-
-
-
-@app.post("/artifact/update/")
-async def remove_artifact():
-    pass
-
-@app.delete("/artifact/{id}")
-async def delete_artifact(
-    id: str = Path(..., regex=r"^[\w\-]+$")
-):
-    artifact_path = os.path.join(ARTIFACTS_DIR, id)
-
-    if not os.path.exists(artifact_path) or not os.path.isdir(artifact_path):
-        raise HTTPException(status_code=404, detail="Artifact not found")
-
-    try:
-        shutil.rmtree(artifact_path)
-        return {"status": "success", "removed": id}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to remove artifact: {str(e)}")
-    
-
 @app.post("/artifact/{id}/upload-rti")
 async def upload_rti(
     id: str = Path(..., regex=r"^[\w\-]+$"),

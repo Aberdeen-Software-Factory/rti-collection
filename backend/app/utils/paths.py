@@ -1,17 +1,17 @@
-from os.path import join
+from pathlib import Path
 
 
 # ARTIFACTS_DIR = join("uploads", "artifacts")
-ARTIFACTS_DIR = "uploads/artifacts/"
+ARTIFACTS_DIR = Path("uploads", "artifacts")
 
-def path_to_artifact(id):
+def path_to_artifact(id: str) -> Path:
     """Returns the path to file directory containing the artifact with the specified ID."""
-    return join(ARTIFACTS_DIR, id)
+    return ARTIFACTS_DIR / id
 
-def path_to_artifact_images(id):
+def path_to_artifact_images(id: str) -> Path:
     """Returns the path to file directory containing the artifact images for the specified ID."""
-    return join(path_to_artifact(id), "images")
+    return path_to_artifact(id) / "images"
 
-def path_to_artifact_RTIs(id):
+def path_to_artifact_RTIs(id: str) -> Path:
     """Returns the path to file directory containing the artifact RTIs for the specified ID."""
-    return join(path_to_artifact(id), "RTIs")
+    return path_to_artifact(id) / "RTIs"

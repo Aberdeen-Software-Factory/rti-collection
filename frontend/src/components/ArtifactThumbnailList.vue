@@ -16,7 +16,7 @@ function getThumbnailUrl(path) {
             v-for="(rti, index) in media"
             :key="index"
             :rti="rti"
-            :src="getThumbnailUrl(rti.thumbnail)"
+            :src="getThumbnailUrl(rti.thumbnailURL)"
             :class="{ selected: selected === rti.url }"
             v-on:click="selected = rti.url"
             />

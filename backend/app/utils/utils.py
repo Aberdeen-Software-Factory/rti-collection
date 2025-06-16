@@ -4,6 +4,11 @@ import os
 import json
 from .paths import path_to_artifact, path_to_artifact_images, path_to_artifact_RTIs
 from urllib.parse import urljoin
+from pathlib import Path
+
+def find_first_thumbnail_in(dir: Path) -> Path | None:
+    for thumb_path in dir.rglob("thumbnail.jpg"):
+        return thumb_path
 
 
 def upload_files(dest: str, files: list[UploadFile]):
