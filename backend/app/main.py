@@ -18,7 +18,7 @@ app.include_router(secret.authenticated_router)
 origins = [
     "http://localhost:5173",  # Vue dev server
     "http://localhost:3000",
-    "https://aberdeen-software-factory.github.io/",
+    "https://aberdeen-software-factory.github.io",
     # add other allowed origins if needed
 ]
 
