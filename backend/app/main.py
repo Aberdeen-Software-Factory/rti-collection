@@ -5,7 +5,7 @@ import uuid
 import os
 import shutil
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import artifacts
+from .routers import artifacts, ptm_to_rti
 from .routers import authenticated_artifacts
 from .utils.paths import ARTIFACTS_DIR
 
@@ -13,6 +13,7 @@ app = FastAPI()
 
 app.include_router(artifacts.router)
 app.include_router(authenticated_artifacts.authenticated_router)
+app.include_router(ptm_to_rti.router)
 
 # Allow requests from your Vue dev server
 origins = [

@@ -6,9 +6,11 @@ import uuid
 import os
 import shutil
 import json
+import tempfile
 from ..utils.auth import authenticate
 from ..utils.paths import path_to_artifact, path_to_artifact_images, path_to_artifact_RTIs
-
+from ..utils.relight_cli import call_relight_cli
+import pathlib
 
 # Config
 
@@ -26,7 +28,8 @@ authenticated_router = APIRouter(
 async def create_artifact(
     request: Request,
     metadata: str = Form(None),
-    images: list[UploadFile] = File(None),
+    images: list[UploadFile] = File(None), # TODO rename to image_files
+    ptm_files: list[UploadFile] | None = File(None),
     RTIKeys: list[str] = None,
 ):
     # Generate a unique artifact ID
@@ -45,7 +48,25 @@ async def create_artifact(
     # RTIs
     await update_RTIs(artifact_id, RTIKeys, request)
 
-    return JSONResponse({"artifact_id": artifact_id, "message": "Upload successful"})
+    #TODO upload ptm files too in future
+    ptm_filenames_with_errors = []
+    for ptm_file in ptm_files or []:
+        os.makedirs(str(artifact_dir / "RTIs"), exist_ok=True)
+
+        with tempfile.NamedTemporaryFile(suffix=pathlib.Path(ptm_file.filename).suffix) as temp_ptm:
+            shutil.copyfileobj(ptm_file.file, temp_ptm)
+            try:
+                call_relight_cli(temp_ptm.name, str(artifact_dir / "RTIs" / str(uuid.uuid4())))
+                print(f"Successfully converted {ptm_file.filename} file.")
+            except Exception as e:
+                print(f"Error while converting {ptm_file.filename} file.", e)
+                ptm_filenames_with_errors.append(ptm_file.filename)
+
+    return JSONResponse({
+        "artifact_id": artifact_id, 
+        "message": "Upload successful",
+        "filesWithErrors": ptm_filenames_with_errors,
+    })
 
 
 @authenticated_router.put("/{artifact_id}")
