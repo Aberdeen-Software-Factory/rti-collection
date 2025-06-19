@@ -44,7 +44,7 @@ app.mount("/uploads/artifacts", StaticFiles(directory=ARTIFACTS_DIR), name="arti
 
 @app.post("/artifact/{id}/upload-rti")
 async def upload_rti(
-    id: str = Path(..., regex=r"^[\w\-]+$"),
+    id: str = Path(..., pattern=r"^[\w\-]+$"),
     files: list[UploadFile] = File([]),
 ):
     # Create directories
@@ -61,8 +61,8 @@ async def upload_rti(
 
 @app.delete("/artifact/{id}/rti/{rti_id}")
 async def delete_rti(
-    id: str = Path(..., regex=r"^[\w\-]+$"),  # Artifact ID
-    rti_id: str = Path(..., regex=r"^[\w\-]+$"),
+    id: str = Path(..., pattern=r"^[\w\-]+$"),  # Artifact ID
+    rti_id: str = Path(..., pattern=r"^[\w\-]+$"),
 ):
     rti_path = os.path.join(ARTIFACTS_DIR, id, "rti", rti_id)
 
