@@ -5,8 +5,8 @@ from fastapi import Request
 from .paths import relative_to_artifacts_dir
 
 
-def get_static_file_url(request: Request, path: Path) -> str:
+def get_static_file_url(request: Request, path: Path) -> str | None:
     if path is None:
-        return ""
+        return None
     path_without_artifacts_dir = relative_to_artifacts_dir(path)
     return str(request.url_for("artifacts", path=str(path_without_artifacts_dir)))

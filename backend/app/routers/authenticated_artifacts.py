@@ -1,4 +1,3 @@
-import json
 import shutil
 import uuid
 
@@ -48,9 +47,9 @@ async def create_artifact(
         "webrti_ids": webrti_ids,
     })
 
-@authenticated_router.put("/{artifact_id}")
+@authenticated_router.put("/{id}")
 async def update_artifact(
-    artifact_id: str = Path(..., pattern=r"^[\w\-]+$"),
+    id: str = Path(..., pattern=r"^[\w\-]+$"),
     metadata: str = Form(None),
     images: list[UploadFile] = File(None),
     webrtis: list[UploadFile] = File(None),
@@ -58,30 +57,30 @@ async def update_artifact(
 ):
     print("Recieved update with metadata:", metadata)
 
-    artifact_dir = path_to_artifact(artifact_id)
+    artifact_dir = path_to_artifact(id)
 
     try:
         shutil.rmtree(str(artifact_dir))
-        save_artifact(artifact_id, json.loads(metadata or "{}"), images, webrtis, ptms)
+        save_artifact(id, Metadata.model_validate_json(metadata or "{}"), images or [], webrtis or [], ptms or [])
     except FileNotFoundError:
-        raise HTTPException(404, f"Artifact with ID '{artifact_id}' not found.")
+        raise HTTPException(404, f"Artifact with ID '{id}' not found.")
     except Exception as error:
-        raise HTTPException(404, f"Error while updating artifact with ID '{artifact_id}'. {error}")
+        raise HTTPException(404, f"Error while updating artifact with ID '{id}'. {error}")
 
-    return JSONResponse({"artifact_id": artifact_id, "message": "Upload successful"})
+    return JSONResponse({"artifact_id": id, "message": "Upload successful"})
 
-@authenticated_router.delete("/{artifact_id}")
+@authenticated_router.delete("/{id}")
 def delete_artifact(
-    artifact_id: str = Path(..., pattern=r"^[\w\-]+$"),
+    id: str = Path(..., pattern=r"^[\w\-]+$"),
 ):
-    artifact_dir = path_to_artifact(artifact_id)
+    artifact_dir = path_to_artifact(id)
 
     try:
         shutil.rmtree(artifact_dir)
     except FileNotFoundError:
-        raise HTTPException(404, f"Artifact with ID {artifact_id} does not exist.")
+        raise HTTPException(404, f"Artifact with ID {id} does not exist.")
 
     return JSONResponse({
-        "artifact_id": artifact_id,
+        "artifact_id": id,
         "message": "Deleted successfully."
     })

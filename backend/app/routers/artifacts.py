@@ -20,12 +20,12 @@ async def read_artifacts(
     )
 
 
-@router.get("/{artifact_id}")
+@router.get("/{id}")
 async def read_artifact(
     request: Request,
-    artifact_id: str = Path(..., pattern=r"^[\w\-]+$"),
+    id: str = Path(..., pattern=r"^[\w\-]+$"),
 ) -> ArtifactResponse:
-    artifact_path = path_to_artifact(artifact_id)
+    artifact_path = path_to_artifact(id)
     artifact = load_artifact(artifact_path, request)
 
     return ArtifactResponse(

@@ -20,14 +20,14 @@ class RelightWebMedia(BaseModel):
 class Rtis(BaseModel):
     web: list[RelightWebMedia]
 
-class ArtifactM(BaseModel):
+class Artifact(BaseModel):
     id: str
     metadata: Metadata
-    images: list[str]
+    images: list[HttpUrl]
     rtis: Rtis
 
 class ArtifactResponse(BaseModel):
-    artifact: ArtifactM
+    artifact: Artifact
 
 class ArtifactPreview(BaseModel):
     id: str
@@ -36,7 +36,7 @@ class ArtifactPreview(BaseModel):
     creator: str
     date: str
     copyright: str
-    thumbnailURL: str
+    thumbnailURL: Optional[HttpUrl]
 
 class ArtifactsResponse(BaseModel):
     artifacts: list[ArtifactPreview]

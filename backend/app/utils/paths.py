@@ -4,7 +4,7 @@ from pathlib import Path
 
 # ARTIFACTS_DIR = join("uploads", "artifacts")
 # ARTIFACTS_DIR = Path("uploads2", "artifacts")
-ARTIFACTS_DIR = Path(os.environ.get("ARTIFACTS_DIR", "uploads2/artifacts"))
+ARTIFACTS_DIR = Path(os.environ.get("ARTIFACTS_DIR", "uploads/artifacts"))
 
 def get_artifacts_root() -> Path:
     return ARTIFACTS_DIR

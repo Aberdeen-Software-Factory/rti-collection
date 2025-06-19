@@ -79,7 +79,7 @@ def save_ptm(
     rti_id = str(uuid.uuid4())
 
     dest.mkdir(parents=True, exist_ok=True)
-    save_files(str(dest), [file])
+    save_file(dest, file)
 
     webrti_path = webrti_dest / rti_id
     webrti_path.mkdir(parents=True)

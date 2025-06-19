@@ -1,9 +1,9 @@
 from pathlib import Path
 
 from fastapi import HTTPException, Request
-from pydantic import HttpUrl
+from pydantic import HttpUrl, ValidationError
 
-from ..model.model import ArtifactM, ArtifactPreview, Metadata, RelightWebMedia, Rtis
+from ..model.model import Artifact, ArtifactPreview, Metadata, RelightWebMedia, Rtis
 from .io import find_first_in
 from .url import get_static_file_url
 
@@ -16,7 +16,7 @@ class ArtifactNotFoundError(HTTPException):
 def load_metadata(path: Path) -> Metadata:
     try:
         return Metadata.model_validate_json(path.read_text())
-    except FileNotFoundError:
+    except (ValidationError, FileNotFoundError):
         return Metadata()
 
 
@@ -46,11 +46,11 @@ def load_webrti(path: Path, request: Request) -> RelightWebMedia:
     )
 
 
-def load_artifact(path: Path, request: Request) -> ArtifactM:
+def load_artifact(path: Path, request: Request) -> Artifact:
     if not path.is_dir():
         raise ArtifactNotFoundError(path.name)
 
-    return ArtifactM(
+    return Artifact(
         id=path.name,
         metadata=load_metadata(path / "metadata.json"),
         images=load_images(path / "images", request),
