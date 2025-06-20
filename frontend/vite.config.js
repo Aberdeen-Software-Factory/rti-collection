@@ -20,5 +20,8 @@ export default ({ mode }) => {
         '@': fileURLToPath(new URL('./src', import.meta.url))
       },
     },
+    preview: {
+      port: 5173,
+    },
   })
 }
