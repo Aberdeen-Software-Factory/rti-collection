@@ -12,6 +12,7 @@ import { ref, onMounted } from 'vue';
 import { fetchArtifact, updateArtifact, deleteArtifact } from '../backend.js';
 import { fetchFiles } from '../utils.js';
 import { useRouter } from 'vue-router'
+import JSZip from "jszip";
 
 const router = useRouter()
 
@@ -44,14 +45,23 @@ function getThumbnailUrl(path) {
 
 async function onEditClicked() {
   // Download RTI files
-  const RTIs = [];
+  const zippedWebrtis = [];
   
   for (const rti of artifact.value.RTIs) {
+    console.log("webrti", rti)
     const files = await fetchFiles(rti.files)
-    RTIs.push(files)
+    const zip = new JSZip();
+    for (const file of files) {
+      zip.file(file.name, file); // Add each file to the ZIP
+    }
+
+    const zipBlob = await zip.generateAsync({ type: "blob" }); // or "base64", "uint8array", etc.
+
+    const zipFile = new File([zipBlob], "archive.zip", { type: zipBlob.type })
+    zippedWebrtis.push(zipFile);
   }
   
-  RTIFiles.value = RTIs;
+  RTIFiles.value = zippedWebrtis;
   
   // Download image files
   const images = await fetchFiles(artifact.value.images);
@@ -73,7 +83,7 @@ async function onDeleteClicked() {
 }
 
 async function handleSubmit(a) {
-  console.log(a)
+  console.log("form", a)
   console.log(artifact)
   
   // event.preventDefault();
@@ -89,7 +99,8 @@ async function handleSubmit(a) {
         copyright: a.copyright,
       },
       images: a.images,
-      RTIs: a.RTIs,
+      webrtis: a.webrtis,
+      ptms: a.ptms,
     });
     console.log(res);
     isEditing.value = false

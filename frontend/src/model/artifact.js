@@ -1,15 +1,15 @@
 class Artifact {
-    constructor({ id, title, description, creator, date, thumbnail, imageURLs, RTIs }) {
+    constructor({ id, metadata, images, rtis }) {
         // metadata
         this.id = id;
-        this.title = title;
-        this.description = description;
-        this.creator = creator;
-        this.date = date;
+        this.title = metadata.title;
+        this.description = metadata.description;
+        this.creator = metadata.creator;
+        this.date = metadata.date;
         // media
-        this.thumbnail = thumbnail;
-        this.images = imageURLs;
-        this.RTIs = RTIs;
+        this.thumbnail = metadata.thumbnail;
+        this.images = images;
+        this.RTIs = rtis.web;
     }
 }
 

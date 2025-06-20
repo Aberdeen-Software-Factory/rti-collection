@@ -32,39 +32,54 @@ async function fetchArtifact(id) {
     }
 }
 
-function assembleFormData({ metadata, images, RTIs }) {
+function assembleFormData({ metadata, images, webrtis, ptms }) {
     const formData = new FormData();
-    console.log(metadata);
+    console.log(webrtis);
     if (metadata) {
         formData.append('metadata', JSON.stringify(metadata));
     }
     
     if (images) {
         for (const file of images) {
-            formData.append('images', file);
+            formData.append('images', file)
         }
     }
+    if (webrtis) {
+        for (const file of webrtis) {
+            formData.append('webrtis', file)
+        }
+    }
+    if (ptms) {
+        for (const file of ptms) {
+            formData.append('ptms', file)
+        }
+    }
+    // if (images) {
+    //     for (const file of images) {
+    //         formData.append('images', file);
+    //     }
+    // }
     
-    if (RTIs) {
-        for (const [i, RTI] of RTIs.entries()) {
-            const RTIKey = `RTI_${i + 1}`;
-            formData.append('RTIKeys', RTIKey);
-            for (const file of RTI) {
-                formData.append(RTIKey, file);
-            }
-        }
-    }
+    // if (RTIs) {
+    //     for (const [i, RTI] of RTIs.entries()) {
+    //         const RTIKey = `RTI_${i + 1}`;
+    //         formData.append('RTIKeys', RTIKey);
+    //         for (const file of RTI) {
+    //             formData.append(RTIKey, file);
+    //         }
+    //     }
+    // }
     
     console.log('FormData contents:', [...formData.entries()]);
     return formData;
 }
 
-async function createArtifact({ metadata, images, RTIs }) {
+async function createArtifact({ metadata, images, RTIs, ptms }) {
     const username = '';
     const password = prompt("Enter your password:");
     const credentials = btoa(`${username}:${password}`);
     
-    const formData = assembleFormData({ metadata, images, RTIs });
+    const formData = assembleFormData({ metadata, images, RTIs, ptms });
     
     const res = await fetch(new URL('/artifacts', API_BASE_URL), {
         method: 'POST',
@@ -83,12 +98,12 @@ async function createArtifact({ metadata, images, RTIs }) {
     
 }
 
-async function updateArtifact(id, { metadata, images, RTIs }) {
+async function updateArtifact(id, { metadata, images, webrtis, ptms }) {
     const username = '';
     const password = prompt("Enter your password:");
     const credentials = btoa(`${username}:${password}`);
     
-    const formData = assembleFormData({ metadata, images, RTIs });
+    const formData = assembleFormData({ metadata, images, webrtis, ptms });
     
     const res = await fetch(new URL(`/artifacts/${id}`, API_BASE_URL), {
         method: 'PUT',

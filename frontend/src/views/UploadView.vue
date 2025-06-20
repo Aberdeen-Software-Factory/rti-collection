@@ -16,7 +16,8 @@ async function handleSubmit(artifact) {
                 copyright: artifact.copyright,
             },
             images: artifact.images,
-            RTIs: artifact.RTIs,
+            webrtis: artifact.webrtis,
+            ptms: artifact.ptms,
         });
         
         console.log(res);

@@ -1,5 +1,7 @@
 <script setup>
 import { reactive } from 'vue'
+import JSZip from "jszip";
+import ZipPreview from './ZipPreview.vue'
 
 const { defaultValues } = defineProps({
     defaultValues: {
@@ -9,7 +11,7 @@ const { defaultValues } = defineProps({
 
 const emit = defineEmits(['submit'])
 
-const artifact = reactive({
+const form = reactive({
     // Metadata
     id: defaultValues.id ?? '',
     title: defaultValues.title ?? '',
@@ -18,32 +20,58 @@ const artifact = reactive({
     date: defaultValues.date ?? '',
     copyright: defaultValues.copyright ?? '',
     // Media
-    images: defaultValues.images ?? [],
-    RTIs: defaultValues.RTIs ?? [],
+    images: defaultValues.images ?? [], // .jpg files
+    webrtis: defaultValues.RTIs ?? [],  // .zip files
+    ptms: defaultValues.ptms ?? [],     // .ptm files
 })
+
+function getFileExtension(file) {
+    const parts = file.name.split('.');
+    return parts.length > 1 ? parts.pop().toLowerCase() : '';
+}
 
 function onImageSelected(event) {
     const files = Array.from(event.target.files)
-    artifact.images = [...artifact.images, ...files]
+
+    for (const file of files) {
+        switch (getFileExtension(file)) {
+            case "jpg":
+                form.images = [...form.images, file]
+                break;
+            case "zip":
+                form.webrtis = [...form.webrtis, file]
+                break;
+            case "ptm":
+                form.ptms = [...form.ptms, file]
+                break;
+            default:
+                console.log(`Unsupported file uploaded: ${file.name}`)
+        }
+    }
+
     event.target.value = null
 }
 
 function removeImage(index) {
-    artifact.images.splice(index, 1)
+    form.images.splice(index, 1)
 }
 
 function onRTISelected(event) {
     const files = Array.from(event.target.files)
-    artifact.RTIs = [...artifact.RTIs, files]
+    form.webrtis = [...form.webrtis, files]
     event.target.value = null
 }
 
 function removeRTI(index) {
-    artifact.RTIs.splice(index, 1);
+    form.webrtis.splice(index, 1);
+}
+
+function removePtm(index) {
+    form.ptms.splice(index, 1);
 }
 
 async function handleSubmit(event) {
-    emit('submit', artifact);
+    emit('submit', form);
     event.preventDefault();
 }
 
@@ -59,6 +87,33 @@ function blobUrl(file) {
         return file;
     }
 }
+
+async function listZipContents(zipFile, filename="plane_0.jpg") {
+  const zip = await JSZip.loadAsync(zipFile); // Load the ZIP contents
+
+  
+
+//   const fileNames = Object.keys(zip.files); // List of file paths/names in the ZIP
+
+//   fileNames.forEach(name => {
+//     const file = zip.files[name];
+//     console.log({
+//       name,
+//       isDirectory: file.dir,
+//       compressedSize: file._data?.compressedSize, // may be undefined
+//       uncompressedSize: file._data?.uncompressedSize, // may be undefined
+//     });
+//   });
+
+  const file = zip.files[filename];
+    console.log(file)
+  const blob = await file.async("blob"); // Extract the file as a Blob
+  const url = URL.createObjectURL(blob); // Create a temporary object URL
+  console.log(url)
+  return url;
+
+}
+
 </script>
 
 <template>
@@ -66,38 +121,66 @@ function blobUrl(file) {
         <div class="form-row">
             <label class="form-label" for="title">Title</label>
             <div class="form-field">
-                <input id="title" v-model="artifact.title" type="text" />
+                <input id="title" v-model="form.title" type="text" />
             </div>
         </div>
-        
-        <!-- RTI upload -->
+
         <div class="form-row">
-            <label class="form-label" for="RTIs">RTIs</label>
+            <label class="form-label" for="images">Files</label>
             <div class="form-field">
-                <input id="RTIs" type="file" multiple @change="onRTISelected"/>
-                <div class="thumbnail-list" v-if="artifact.RTIs.length">
-                    <div class="thumb" v-for="(files, index) in artifact.RTIs" :key="index" @click="removeRTI(index)" title="Click to remove">
+                <input
+                id="images"
+                type="file"
+                accept=".jpg, .zip, .ptm"
+                multiple
+                @change="onImageSelected"
+                />
+            </div>
+    </div>
+        
+        <div v-if="form.ptms.length" class="form-row">
+            <label class="form-label" for="images"></label>
+            <div class="form-field">
+                <h4>Polynomial Texture Map (.ptm) Files:</h4>
+                <div class="thumbnail-list" v-if="form.ptms.length">
+                    <div
+                    class="thumb"
+                    v-for="(file, index) in form.ptms"
+                    :key="file.name"
+                    @click="removePtm(index)"
+                    title="Click to remove"
+                    >
+                    <p>{{ file.name }}</p>
+                    <!-- <img :src="blobUrl(file)" :alt="file.name" /> -->
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- RTI upload -->
+        <div v-if="form.webrtis.length" class="form-row">
+            <label class="form-label" for="RTIs"></label>
+            <div class="form-field">
+                <!-- <input id="RTIs" type="file" multiple @change="onRTISelected"/> -->
+                <h4>Relight Web Format Files:</h4>
+                <div class="thumbnail-list" v-if="form.webrtis.length">
+                    <div class="thumb" v-for="(files, index) in form.webrtis" :key="index" @click="removeRTI(index)" title="Click to remove">
                         <p>{{ files.length }} files</p>
-                        <img :src="blobUrl(getPlane0(files))" />
+                        <!-- <img :src="blobUrl(getPlane0(files))" /> -->
+                        <ZipPreview :zipFile="files" :filename="'plane_0.jpg'"/>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="form-row">
-            <label class="form-label" for="images">Images</label>
+        <div v-if="form.images.length" class="form-row">
+            <label class="form-label" for="images"></label>
             <div class="form-field">
-                <input
-                id="images"
-                type="file"
-                multiple
-                accept="image/*"
-                @change="onImageSelected"
-                />
-                <div class="thumbnail-list" v-if="artifact.images.length">
+                <p>Still Image Files:</p>
+                <div class="thumbnail-list" v-if="form.images.length">
                     <div
                     class="thumb"
-                    v-for="(file, index) in artifact.images"
+                    v-for="(file, index) in form.images"
                     :key="file.name"
                     @click="removeImage(index)"
                     title="Click to remove"
@@ -111,28 +194,28 @@ function blobUrl(file) {
     <div class="form-row">
         <label class="form-label" for="description">Description</label>
         <div class="form-field">
-            <textarea id="description" v-model="artifact.description" rows="3"></textarea>
+            <textarea id="description" v-model="form.description" rows="3"></textarea>
         </div>
     </div>
     
     <div class="form-row">
         <label class="form-label" for="creator">Creator</label>
         <div class="form-field">
-            <input id="creator" v-model="artifact.creator" type="text" />
+            <input id="creator" v-model="form.creator" type="text" />
         </div>
     </div>
     
     <div class="form-row">
         <label class="form-label" for="date">Date</label>
         <div class="form-field">
-            <input id="date" v-model="artifact.date" type="text" />
+            <input id="date" v-model="form.date" type="text" />
         </div>
     </div>
     
     <div class="form-row">
         <label class="form-label" for="copyright">Copyright</label>
         <div class="form-field">
-            <input id="copyright" v-model="artifact.copyright" type="text" />
+            <input id="copyright" v-model="form.copyright" type="text" />
         </div>
     </div>
     
@@ -144,6 +227,7 @@ function blobUrl(file) {
 </template>
 
 <style scoped>
+
 h1 {
     width: 100%;
 }
