@@ -79,75 +79,45 @@ async function downloadFiles() {
 onMounted(() => {
     downloadFiles()
 })
+
 </script>
 
 <template>
     <h1 v-if="isLoading">Loading...</h1>
-    <form v-else @submit.prevent="handleSubmit">
-        <TextInput label="Name" v-model:text="form.metadata.name"/>
-        <FilesInput
-            label="Media"
-            v-model:images="form.imageFiles"
-            v-model:webrtis="form.webrtiFiles"
-            v-model:ptms="form.ptmFiles"
-        />
-        <TagsInput label="Language" v-model="form.metadata.language"/>
-        <TagsInput label="Script/Writing System" v-model="form.metadata.script"/>
-        <TagsInput label="Archeological Provenance" v-model="form.metadata.provenance"/>
-        <TagsInput label="Current Location" v-model="form.metadata.location"/>
-        <TagsInput label="Photographer(s)" v-model="form.metadata.photographer"/>
-        <TextInput label="Date(s) of Imaging" v-model:text="form.metadata.date"/>
-        <LargeTextInput label="Bibliography" v-model:text="form.metadata.bibliography"/>
-        <LargeTextInput label="Notes" v-model:text="form.metadata.notes"/>
-        <TagsInput label="Keywords" v-model="form.metadata.keywords"/>
-        <SelectInput label="Copyright" :options="ccLicenseOptions" v-model:selected="form.metadata.copyright"/>
+    <form v-else @submit.prevent="handleSubmit" class="max-w-2xl mx-auto p-2 w-full">
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Files</legend>
+            <FilesInput
+                label="Media"
+                v-model:images="form.imageFiles"
+                v-model:webrtis="form.webrtiFiles"
+                v-model:ptms="form.ptmFiles"
+            />
+        </fieldset>
+        <fieldset class="fieldset gap-2">
+                        <legend class="fieldset-legend">Metadata</legend>
+
+            <div class="grid gap-2 grid-cols-1 md:[grid-template-columns:auto_1fr]">
     
+            <TextInput label="Name" v-model:text="form.metadata.name"/>
+            <TagsInput label="Language" v-model="form.metadata.language"/>
+            <TagsInput label="Script/Writing System" v-model="form.metadata.script"/>
+            <TagsInput label="Archeological Provenance" v-model="form.metadata.provenance"/>
+            <TagsInput label="Current Location" v-model="form.metadata.location"/>
+            <TagsInput label="Photographer(s)" v-model="form.metadata.photographer"/>
+            <TextInput label="Date(s) of Imaging" v-model:text="form.metadata.date"/>
+            <LargeTextInput label="Bibliography" v-model:text="form.metadata.bibliography"/>
+            <LargeTextInput label="Notes" v-model:text="form.metadata.notes"/>
+            <TagsInput label="Keywords" v-model="form.metadata.keywords"/>
+            <SelectInput label="Copyright" :options="ccLicenseOptions" v-model:selected="form.metadata.copyright"/>
+        </div>
+
+        
+    </fieldset>
     <slot></slot>
 </form>
 </template>
 
 <style scoped>
-
-h1 {
-    width: 100%;
-}
-
-form {
-    max-width: 700px;
-}
-
-.form-row {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 1em;
-}
-
-.form-label {
-    flex: 0 0 150px;
-    max-width: 150px;
-    font-weight: bold;
-    padding-right: 1em;
-    box-sizing: border-box;
-}
-
-.form-field {
-    flex: 1;
-    min-width: 0;
-}
-
-
-
-input[type="text"],
-textarea {
-    width: 100%; /* Fill available space */
-    box-sizing: border-box;
-    padding: 6px;
-    font-size: 1em;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: vertical;
-}
-
-
 
 </style>

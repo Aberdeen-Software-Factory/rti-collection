@@ -141,4 +141,4 @@ async function deleteArtifact(id) {
     return data;
 }
 
-export { fetchArtifacts, fetchArtifact, createArtifact, updateArtifact, deleteArtifact }
+export { fetchArtifacts, fetchArtifact, createArtifact, updateArtifact, deleteArtifact, assembleFormData }

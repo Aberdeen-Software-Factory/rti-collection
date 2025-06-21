@@ -39,15 +39,15 @@ function onImageSelected(event) {
 }
 
 function removeImage(index) {
-    images.splice(index, 1)
+    images.value.splice(index, 1)
 }
 
 function removeRTI(index) {
-    webrtis.splice(index, 1);
+    webrtis.value.splice(index, 1);
 }
 
 function removePtm(index) {
-    ptms.splice(index, 1);
+    ptms.value.splice(index, 1);
 }
 
 function getPlane0(files) {
@@ -91,7 +91,18 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
 </script>
 
 <template>
-    <div class="form-row">
+    <label class="label">Supported file formats: .ptm, .jpg, .zip</label>
+    <label class="btn cursor-pointer">
+        Add Files
+        <input
+            id="images"
+            type="file"
+            class="hidden"
+            accept=".jpg, .zip, .ptm"
+            multiple
+            @change="onImageSelected" />
+    </label>
+    <!-- <div class="form-row">
         <label class="form-label" for="images">{{ label }}</label>
         <div class="form-field">
             <input
@@ -102,12 +113,11 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
                 @change="onImageSelected"
             />
         </div>
-    </div>
+    </div> -->
     
     <div v-if="ptms.length" class="form-row">
-        <label class="form-label" for="images"></label>
         <div class="form-field">
-            <h4>Polynomial Texture Map (.ptm) Files:</h4>
+            <label class="label">Polynomial Texture Map (.ptm) Files:</label>
             <div class="thumbnail-list" v-if="ptms.length">
                 <div
                 class="thumb"
@@ -125,12 +135,11 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
 
 <!-- RTI upload -->
 <div v-if="webrtis.length" class="form-row">
-    <label class="form-label" for="RTIs"></label>
     <div class="form-field">
         <!-- <input id="RTIs" type="file" multiple @change="onRTISelected"/> -->
-        <h4>Relight Web Format Files:</h4>
-        <div class="thumbnail-list" v-if="webrtis.length">
-            <div class="thumb" v-for="(files, index) in webrtis" :key="index" @click="removeRTI(index)" title="Click to remove">
+        <label class="label">Relight Web Format Files:</label>
+        <div class="grid grid-cols-3 gap-4" v-if="webrtis.length">
+            <div class="aspect-square object-cover" v-for="(files, index) in webrtis" :key="index" @click="removeRTI(index)" title="Click to remove">
                 <p>{{ files.length }} files</p>
                 <!-- <img :src="blobUrl(getPlane0(files))" /> -->
                 <ZipPreview :zipFile="files" :filename="'plane_0.jpg'"/>
@@ -142,8 +151,8 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
 <div v-if="images.length" class="form-row">
     <label class="form-label" for="images"></label>
     <div class="form-field">
-        <p>Still Image Files:</p>
-        <div class="thumbnail-list" v-if="images.length">
+        <label class="label">Still Image Files:</label>
+        <div class="grid grid-cols-3 gap-4" v-if="images.length">
             <div
             class="thumb"
             v-for="(file, index) in images"

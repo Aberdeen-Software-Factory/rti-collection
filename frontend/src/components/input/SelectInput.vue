@@ -10,18 +10,11 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="form-row">
-    <label class="form-label">{{ label }}</label>
-    <div class="form-field">
-      <select class="form-input" v-model="selected">
-        <option disabled value="">Please select</option>
-        <option v-for="(option, index) in options" :key="index" :value="option.value">
-          {{ option.text }}
-        </option>
-      </select>
-    </div>
-  </div>
+    <label class="label grow-1">{{ label }}</label>
+    <select class="select" v-model="selected">
+      <option disabled value="">Please select</option>
+      <option v-for="(option, index) in options" :key="index" :value="option.value">
+        {{ option.text }}
+      </option>
+    </select>
 </template>
-
-<style scoped>
-</style>

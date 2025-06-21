@@ -10,7 +10,7 @@
 * @property {string} bibliography
 * @property {string} notes
 * @property {string[]} keywords
-* @property {string} copyright
+* @property {CCLicense} copyright
 */
 
 /**
@@ -31,7 +31,7 @@ class Metadata {
         bibliography = '',
         notes = '',
         keywords = [],
-        copyright = '',
+        copyright = CCLicense.BY
     } = {}) {
         this.name = name;
         this.language = language;
@@ -47,4 +47,17 @@ class Metadata {
     }
 }
 
-export { Metadata }
+/**
+ * @readonly
+ * @enum {string}
+ */
+const CCLicense = {
+  BY:        "CC BY",
+  BY_SA:     "CC BY-SA",
+  BY_ND:     "CC BY-ND",
+  BY_NC:     "CC BY-NC",
+  BY_NC_SA:  "CC BY-NC-SA",
+  BY_NC_ND:  "CC BY-NC-ND",
+}
+
+export { Metadata, CCLicense }
