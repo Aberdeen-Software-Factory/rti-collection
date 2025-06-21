@@ -1,18 +1,19 @@
 <script setup>
-const props = defineProps(['id', 'artifact'])
+const props = defineProps({
+  id: String,
+  artifact: Artifact,
+})
 
 import OpenLimeViewer from '../components/rti/OpenLimeViewer.vue'
 import ImageThumbnailList from '../components/ImageThumbnailList.vue';
 import ArtifactThumbnailList from '../components/ArtifactThumbnailList.vue';
-import ArtifactForm from '../components/ArtifactForm.vue'
-import ArtifactDetails from '../components/ArtifactDetails.vue'
-import RTIThumbnail from '../components/RTIThumbnail.vue';
+import ArtifactEditor from '../components/ArtifactEditor.vue'
+import MetadataDisplay from '../components/display/MetadataDisplay.vue';
 
 import { ref, onMounted } from 'vue';
 import { fetchArtifact, updateArtifact, deleteArtifact } from '../backend.js';
-import { fetchFiles } from '../utils.js';
 import { useRouter } from 'vue-router'
-import JSZip from "jszip";
+import { Artifact } from '@/model/artifact';
 
 const router = useRouter()
 
@@ -26,6 +27,8 @@ const RTIFiles = ref([])
 onMounted(async () => {
   artifact.value = await fetchArtifact(props.id);
   selectedMedia.value = getDefaultMedia(artifact.value);
+
+  console.log(artifact.value)
 })
 
 function getDefaultMedia(artifact) {
@@ -44,30 +47,6 @@ function getThumbnailUrl(path) {
 }
 
 async function onEditClicked() {
-  // Download RTI files
-  const zippedWebrtis = [];
-  
-  for (const rti of artifact.value.RTIs) {
-    console.log("webrti", rti)
-    const files = await fetchFiles(rti.files)
-    const zip = new JSZip();
-    for (const file of files) {
-      zip.file(file.name, file); // Add each file to the ZIP
-    }
-
-    const zipBlob = await zip.generateAsync({ type: "blob" }); // or "base64", "uint8array", etc.
-
-    const zipFile = new File([zipBlob], "archive.zip", { type: zipBlob.type })
-    zippedWebrtis.push(zipFile);
-  }
-  
-  RTIFiles.value = zippedWebrtis;
-  
-  // Download image files
-  const images = await fetchFiles(artifact.value.images);
-  
-  imageFiles.value = images;
-  
   isEditing.value = !isEditing.value
 }
 
@@ -91,16 +70,10 @@ async function handleSubmit(a) {
   try {
     console.log(a)
     const res = await updateArtifact(a.id, {
-      metadata: {
-        title: a.title,
-        description: a.description,
-        creator: a.creator,
-        date: a.date,
-        copyright: a.copyright,
-      },
-      images: a.images,
-      webrtis: a.webrtis,
-      ptms: a.ptms,
+      metadata: a.metadata,
+      images: a.imageFiles,
+      webrtis: a.webrtiFiles,
+      ptms: a.ptmFiles,
     });
     console.log(res);
     isEditing.value = false
@@ -116,31 +89,26 @@ async function handleSubmit(a) {
 <template>
   <RouterLink to="/">Back to Collection</RouterLink>
   <section v-if="isEditing">
-    <ArtifactForm v-if="artifact"
-    :defaultValues="{
-      id: artifact.id,
-      title: artifact.title,
-      description: artifact.description,
-      creator: artifact.creator,
-      date: artifact.date,
-      copyright: artifact.copyright,
-      
-      images: imageFiles,
-      RTIs: RTIFiles,
-    }"
+    <h1>Edit Artifact</h1>
+    <ArtifactEditor v-if="artifact"
+    :artifact="artifact"
     @submit="handleSubmit"
     >
     <button @click="isEditing = false">Cancel</button>
     <button type="submit">Save</button>
-  </ArtifactForm>
+  </ArtifactEditor>
 </section>
 <div v-if="artifact && !isEditing">
-  <h1>{{ artifact.title }}</h1>
+  <div style="display: flex;">
+    <h1 style="flex-grow: 1;">{{ artifact.metadata.name || "Artifact" }}</h1>
+    <button @click="onEditClicked" class="link-style">Edit</button>
+    <button @click="onDeleteClicked" class="link-style">Delete</button>
+  </div>
   
   <OpenLimeViewer :url="selectedMedia"/> 
   <!-- <NewViewer :url="selectedMedia"/> -->
   
-  <p>
+  <p v-if="artifact.RTIs.length > 0">
     Relightable Images ({{ artifact.RTIs.length }})
     <!-- <a href="javascript:void(0) " onclick="document.getElementById('fileUpload').click()">Upload</a>
     <input 
@@ -152,35 +120,32 @@ async function handleSubmit(a) {
     /> -->
   </p>
   <ArtifactThumbnailList
+  
   v-model:selected="selectedMedia"
   :media="artifact.RTIs"
   />
   
   <ImageThumbnailList
+  v-if="artifact.images.length > 0"
   v-model:selectedUrl="selectedMedia"
   :urls="artifact.images"
   />
   
+  <MetadataDisplay :metadata="artifact.metadata"/>
   
-  <ArtifactDetails
-  :title="artifact.title"
-  :description="artifact.description"
-  :creator="artifact.creator"
-  :date="artifact.date"
-  :copyright="artifact.copyright"
-  />
   <br/>
-  <button @click="onEditClicked">Edit</button>
-  <button @click="onDeleteClicked">Delete</button>
+  
 </div>
 </template>
 
 <style scoped>
 a {
+  width: fit-content;
   color: inherit;
 }
 
 a:hover {
   text-decoration: none;
 }
+
 </style>

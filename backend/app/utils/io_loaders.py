@@ -85,10 +85,6 @@ def load_artifact_preview(path: Path, request: Request) -> ArtifactPreview:
 
     return ArtifactPreview(
         id=path.name,
-        title=metadata.title or "",
-        description=metadata.description or "",
-        creator=metadata.creator or "",
-        date=metadata.date or "",
-        copyright=metadata.copyright or "",
+        metadata=metadata,
         thumbnailURL=get_static_file_url(request, thumbnail_path),
     )

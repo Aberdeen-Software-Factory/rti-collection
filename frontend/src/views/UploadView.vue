@@ -1,23 +1,19 @@
 <script setup>
-import ArtifactForm from '../components/ArtifactForm.vue';
+import ArtifactEditor from '../components/ArtifactEditor.vue';
 import { createArtifact } from '../backend.js';
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-async function handleSubmit(artifact) {
+async function handleSubmit(uploadForm) {
+    console.log(uploadForm)
+
     try {
         const res = await createArtifact({
-            metadata: {
-                title: artifact.title,
-                description: artifact.description,
-                creator: artifact.creator,
-                date: artifact.date,
-                copyright: artifact.copyright,
-            },
-            images: artifact.images,
-            webrtis: artifact.webrtis,
-            ptms: artifact.ptms,
+            metadata: uploadForm.metadata,
+            images: uploadForm.imageFiles,
+            webrtis: uploadForm.webrtiFiles,
+            ptms: uploadForm.ptmFiles,
         });
         
         console.log(res);
@@ -31,9 +27,11 @@ async function handleSubmit(artifact) {
 
 <template>
     <h1>Upload Artifact</h1>
-    <ArtifactForm
+    <ArtifactEditor
     @submit="handleSubmit"
-    ></ArtifactForm>
+    >
+        <button type="submit">Upload</button>
+    </ArtifactEditor>
 </template>
 
 <style scoped>

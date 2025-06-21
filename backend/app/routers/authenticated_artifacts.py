@@ -36,8 +36,10 @@ async def create_artifact(
             ptms or [],
         )
     except ValidationError:
+        print("Invalid metadata json string.")
         raise HTTPException(404, "Invalid metadata json string.") # TODO: wrong code probably?
     except Exception as error:
+        print(error)
         cleanup(artifact_id)
         raise HTTPException(404, "Something went wrong." + str(error))
 

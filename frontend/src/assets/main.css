@@ -7,6 +7,77 @@ main {
   font-weight: normal;
 }
 
+/* Links styled buttons */
+.link-style {
+  background: none;
+  border: none;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-style:hover {
+  text-decoration: none;
+}
+
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 1em;
+}
+
+.form-label {
+    flex: 0 0 250px;
+    max-width: 250px;
+    font-weight: bold;
+    padding-right: 1em;
+    box-sizing: border-box;
+}
+
+.form-field {
+    flex: 1;
+    min-width: 0;
+
+   
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-label {
+        flex: 0 0 0;
+        max-width: 100%;
+        margin-bottom: 0.25em;
+    }
+}
+
+.thumbnail-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 0.5rem;
+}
+
+.thumb {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
 /* Thumbnail views for images and RTIs */
 .thumbnail {
     width: 120px;

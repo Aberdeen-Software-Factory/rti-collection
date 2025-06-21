@@ -1,15 +1,29 @@
+import { Metadata } from "./metadata";
+
+/**
+* @typedef {Object} ArtifactParams
+* @property {string} id
+* @property {MetadataParams} metadata
+* @property {string[]} images
+* @property {*} rtis //TODO: make typedef for webrtis
+*/
 class Artifact {
-    constructor({ id, metadata, images, rtis }) {
-        // metadata
+    /**
+     * @param {ArtifactParams} params 
+     */
+    constructor({
+        id = '',
+        metadata = new Metadata(),
+        images = [],
+        rtis = { web: [] },
+    } = {}) {
         this.id = id;
-        this.title = metadata.title;
-        this.description = metadata.description;
-        this.creator = metadata.creator;
-        this.date = metadata.date;
+        this.metadata = metadata;
+
         // media
-        this.thumbnail = metadata.thumbnail;
+        this.thumbnail = metadata?.thumbnail;
         this.images = images;
-        this.RTIs = rtis.web;
+        this.RTIs = rtis?.web;
     }
 }
 

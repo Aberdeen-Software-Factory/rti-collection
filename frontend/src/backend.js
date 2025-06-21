@@ -74,12 +74,12 @@ function assembleFormData({ metadata, images, webrtis, ptms }) {
     return formData;
 }
 
-async function createArtifact({ metadata, images, RTIs, ptms }) {
+async function createArtifact({ metadata, images, webrtis, ptms }) {
     const username = '';
     const password = prompt("Enter your password:");
     const credentials = btoa(`${username}:${password}`);
     
-    const formData = assembleFormData({ metadata, images, RTIs, ptms });
+    const formData = assembleFormData({ metadata, images, webrtis, ptms });
     
     const res = await fetch(new URL('/artifacts', API_BASE_URL), {
         method: 'POST',
