@@ -1,2 +1,10 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: light --default, business --prefersdark, cupcake;
+}
+@plugin "@tailwindcss/typography";
+
+.prose p {
+  margin-top: 0;
+  margin-bottom: 0;
+}

@@ -27,7 +27,7 @@ function onBlur() {
 </script>
 
 <template>
-  <label class="text-base-content/50 self-baseline">{{ label }}:</label>
+  <label class="text-sm text-base-content/50 self-baseline">{{ label }}:</label>
   <input
     v-model="internalText"
     @blur="onBlur"

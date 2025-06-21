@@ -2,43 +2,21 @@
 </script>
 
 <template>
-    <footer>
+    <footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
+        <aside>
+            <p>Copyright © {{ new Date().getFullYear() }} - All right reserved by Aberdeen Software Factory</p>
+        </aside>
+    </footer>
+    <!-- <footer>
         <div>
             <RouterLink to="/">Collection</RouterLink>
             <RouterLink to="/upload">Upload Artifact</RouterLink>
             <RouterLink to="/">Terms and conditions</RouterLink>
             <RouterLink to="/">Copyright</RouterLink>
         </div>
-    </footer>
+    </footer> -->
 </template>
 
 <style scoped>
-footer {
-    display: flex;
-    gap: 40px;
-    width: 100vw;
-    background-color: black;
-}
 
-div {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: left;
-    gap: 40px;
-    max-width: 1280px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 2rem;
-    font-weight: normal;
-}
-
-a {
-  color: rgb(180, 180, 180);         /* or any color you prefer */
-  text-decoration: underline; /* optional: remove underline */
-}
-
-a:hover {
-    text-decoration: none;
-}
 </style>

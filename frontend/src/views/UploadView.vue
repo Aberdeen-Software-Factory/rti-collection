@@ -3,40 +3,41 @@ import ArtifactEditor from '../components/ArtifactEditor.vue';
 import { assembleFormData, createArtifact } from '../backend.js';
 import { useRouter } from 'vue-router'
 import { useProgressFetch } from '@/composables/progressFetch';
-import { watch } from 'vue';
+import { watch, ref } from 'vue';
 import ProgressBar from '@/components/display/ProgressBar.vue';
-
+import MetadataEditor from '@/components/input/MetadataEditor.vue';
+import { Artifact } from '@/model/artifact';
 const router = useRouter()
 const { data, error, uploadProgress, downloadProgress, totalProgress, isLoading, progressFetch } = useProgressFetch(new URL('/artifacts', 'http://localhost:8000'))
 
 watch([data, error], ([newData, newError]) => {
-  if (newError) {
-    console.error('Error:', newError)
-  } else if (newData) {
-    console.log('Data:', newData)
-  }
+    if (newError) {
+        console.error('Error:', newError)
+    } else if (newData) {
+        console.log('Data:', newData)
+    }
 })
 
 async function handleSubmit(uploadForm) {
     console.log(uploadForm)
-
+    
     const username = '';
     const password = prompt("Enter your password:");
     const credentials = btoa(`${username}:${password}`);
-
+    
     const formData = assembleFormData({
         metadata: uploadForm.metadata,
         images: uploadForm.imageFiles,
         webrtis: uploadForm.webrtiFiles,
         ptms: uploadForm.ptmFiles,
     });
-
+    
     progressFetch({
         method: 'POST',
         headers: { 'Authorization': `Basic ${credentials}` },
         body: formData
     });
-
+    window.scrollTo({ top: 0, behavior: 'smooth' })
     return;
     try {
         const res = await createArtifact({
@@ -61,25 +62,60 @@ function reset() {
 </script>
 
 <template>
-    <h1>Upload Artifact</h1>
+    <!-- <div className="navbar bg-base-300">
+        <button className="btn btn-ghost text-xl">Relight Collection</button>
+    </div> -->
+    <div class="breadcrumbs text-sm w-full bg-base-200 text-base-content shadow-sm px-4 py-2">
+        <ul>
+            <li><RouterLink to="/">Relight Collection</RouterLink></li>
+            <li>Upload Artifact</li>
+        </ul>
+    </div>
+    
+    <div v-if="data">
+        <div class="hero bg-base-200 min-h-screen">
+            <div class="hero-content text-center">
+                <div class="max-w-md">
+                    <h1 class="text-5xl font-bold">Success</h1>
+                    <slot></slot>
+                    <p class="py-6">
+                        Artifact uploaded.
+                    </p>
+                    <div class="flex gap-2">
+                        <RouterLink :to="`/artifacts/${data.artifact_id}`" class="btn btn-primary w-40">View</RouterLink>
+                        <button @click="reset" class="btn btn-neutral w-40">Upload Another</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div v-if="data || error" >
+    <div v-else-if="isLoading || data || error" >
         <ProgressBar :progress="totalProgress">
             <p>Data: {{ data }}</p>
             <p>Error: {{ error }}</p>
-            <p>Upload Progress: {{ uploadProgress }}</p>
+            <!-- <p>Upload Progress: {{ uploadProgress }}</p>
             <p>Download Progress: {{ downloadProgress }}</p>
-            <p>Total Progress: {{ totalProgress }}</p>
+            <p>Total Progress: {{ totalProgress }}</p> -->
         </ProgressBar>
     </div>
-
-    <ArtifactEditor
-        v-else
+    
+    <div v-else class="max-w-3xl mx-auto">
+        <p class="text-3xl p-2 py-4">Enter Artifact Details</p>
+        
+        <!-- <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-lg border p-4">
+            <legend class="fieldset-legend">Metadata</legend>
+            
+            <MetadataEditor v-model="d"/>
+        </fieldset> -->
+        
+        <ArtifactEditor
         class=""
         @submit="handleSubmit"
-    >
+        >
         <button type="submit" class="btn btn-primary my-6 w-full">Upload</button>
     </ArtifactEditor>
+</div>
 </template>
 
 <style scoped>

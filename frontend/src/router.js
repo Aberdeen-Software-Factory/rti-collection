@@ -16,6 +16,10 @@ const REPO_NAME = import.meta.env.VITE_REPO_NAME
 const router = createRouter({
     history: createWebHistory(REPO_NAME),
     routes,
+    scrollBehavior(to, from, savedPosition) {
+        // always scroll to top on route change
+        return { top: 0 }
+    },
 })
 
 export default router

@@ -16,6 +16,11 @@ const props = defineProps({
                     <span v-if="i < value.length - 1">, </span>
                 </template>
             </template>
+            <p
+            v-else-if="['bibliography', 'notes'].includes(label?.toLowerCase() || '')"
+            :class="'prose prose-base text-base-content'"
+            v-html="value"
+            ></p>
             <p v-else>{{ value }}</p>
         </div>
     </div>

@@ -91,6 +91,7 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
 </script>
 
 <template>
+    <div>
     <label class="label">Supported file formats: .ptm, .jpg, .zip</label>
     <label class="btn cursor-pointer">
         Add Files
@@ -163,6 +164,7 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
             <img :src="blobUrl(file)" :alt="file.name" />
         </div>
     </div>
+</div>
 </div>
 </div>
 </template>

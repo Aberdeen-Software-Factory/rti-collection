@@ -11,7 +11,11 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.10",
+    "@tiptap/pm": "^2.22.2",
+    "@tiptap/starter-kit": "^2.22.2",
+    "@tiptap/vue-3": "^2.22.2",
     "daisyui": "^5.0.43",
     "jszip": "^3.10.1",
     "tailwindcss": "^4.1.10",

@@ -1,5 +1,5 @@
 <script setup>
-const selected = defineModel('selected')
+const selected = defineModel()
 const props = defineProps({
   label: String,
   options: {
@@ -10,8 +10,8 @@ const props = defineProps({
 </script>
 
 <template>
-    <label class="label grow-1">{{ label }}</label>
-    <select class="select" v-model="selected">
+    <label class="text-sm text-base-content/50 self-baseline">{{ label }}:</label>
+    <select class="select self-baseline w-full" v-model="selected">
       <option disabled value="">Please select</option>
       <option v-for="(option, index) in options" :key="index" :value="option.value">
         {{ option.text }}

@@ -3,11 +3,8 @@ import { reactive, onMounted, ref } from 'vue'
 
 import { fetchFiles } from '@/utils';
 import JSZip from 'jszip';
-import TextInput from './input/TextInput.vue';
-import LargeTextInput from './input/LargeTextInput.vue';
-import SelectInput from './input/SelectInput.vue';
-import TagsInput from './input/TagsInput.vue';
 import FilesInput from './input/FilesInput.vue';
+import MetadataEditor from './input/MetadataEditor.vue';
 
 import { Artifact } from '@/model/artifact';
 
@@ -19,15 +16,6 @@ const { artifact } = defineProps({
 });
 
 const isLoading = ref(true);
-
-const ccLicenseOptions = [
-  { value: "CC BY",           text: "Attribution (CC BY)" },
-  { value: "CC BY-SA",        text: "Attribution-ShareAlike (CC BY-SA)" },
-  { value: "CC BY-ND",        text: "Attribution-NoDerivs (CC BY-ND)" },
-  { value: "CC BY-NC",        text: "Attribution-NonCommercial (CC BY-NC)" },
-  { value: "CC BY-NC-SA",     text: "Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)" },
-  { value: "CC BY-NC-ND",     text: "Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)" },
-]
 
 const emit = defineEmits(['submit'])
 console.log(artifact)
@@ -84,32 +72,25 @@ onMounted(() => {
 
 <template>
     <h1 v-if="isLoading">Loading...</h1>
-    <form v-else @submit.prevent="handleSubmit" class="max-w-2xl mx-auto p-2 w-full">
+    <form v-else @submit.prevent="handleSubmit" class="grid max-w-2xl mx-auto p-2 w-full gap-4">
         <fieldset class="fieldset">
-            <legend class="fieldset-legend">Files</legend>
-            <FilesInput
+            <!-- <legend class="fieldset-legend text-2xl">Files</legend> -->
+            
+        </fieldset>
+        <fieldset class="fieldset gap-2">
+                        
+            <!-- <legend class="fieldset-legend text-2xl">Metadata</legend> -->
+
+            <div class="grid gap-x-4 gap-y-2 grid-cols-1 md:[grid-template-columns:auto_1fr]">
+                <label>Files:</label>
+                <FilesInput
                 label="Media"
                 v-model:images="form.imageFiles"
                 v-model:webrtis="form.webrtiFiles"
                 v-model:ptms="form.ptmFiles"
             />
-        </fieldset>
-        <fieldset class="fieldset gap-2">
-                        <legend class="fieldset-legend">Metadata</legend>
-
-            <div class="grid gap-2 grid-cols-1 md:[grid-template-columns:auto_1fr]">
-    
-            <TextInput label="Name" v-model:text="form.metadata.name"/>
-            <TagsInput label="Language" v-model="form.metadata.language"/>
-            <TagsInput label="Script/Writing System" v-model="form.metadata.script"/>
-            <TagsInput label="Archeological Provenance" v-model="form.metadata.provenance"/>
-            <TagsInput label="Current Location" v-model="form.metadata.location"/>
-            <TagsInput label="Photographer(s)" v-model="form.metadata.photographer"/>
-            <TextInput label="Date(s) of Imaging" v-model:text="form.metadata.date"/>
-            <LargeTextInput label="Bibliography" v-model:text="form.metadata.bibliography"/>
-            <LargeTextInput label="Notes" v-model:text="form.metadata.notes"/>
-            <TagsInput label="Keywords" v-model="form.metadata.keywords"/>
-            <SelectInput label="Copyright" :options="ccLicenseOptions" v-model:selected="form.metadata.copyright"/>
+            
+            <MetadataEditor v-model="form.metadata"/>
         </div>
 
         
@@ -117,7 +98,3 @@ onMounted(() => {
     <slot></slot>
 </form>
 </template>
-
-<style scoped>
-
-</style>
