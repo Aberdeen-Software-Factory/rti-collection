@@ -33,9 +33,7 @@ function initRTI(viewer, path) {
 	let layout = 'image';
 	let normals = false;
 	
-	var lime = new OpenLIME.Viewer(viewer, {
-		background: 'black'
-	});
+	var lime = new OpenLIME.Viewer(viewer); // background is set based on theme in css
 	
 	let layer = new OpenLIME.Layer({
 		type:'rti',
@@ -66,9 +64,7 @@ function initJPG(viewer, path) {
 	let layout = 'image';
 	let normals = false;
 	
-	var lime = new OpenLIME.Viewer(viewer, {
-		background: 'black'
-	});
+	var lime = new OpenLIME.Viewer(viewer); // background is set based on theme in css
 	
 	let layer = new OpenLIME.LayerImage({
 		id: 'base-image',

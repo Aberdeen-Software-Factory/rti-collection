@@ -5,8 +5,8 @@ import { useRouter } from 'vue-router'
 import { useProgressFetch } from '@/composables/progressFetch';
 import { watch, ref } from 'vue';
 import ProgressBar from '@/components/display/ProgressBar.vue';
-import MetadataEditor from '@/components/input/MetadataEditor.vue';
-import { Artifact } from '@/model/artifact';
+import Header from '@/components/Header.vue';
+
 const router = useRouter()
 const { data, error, uploadProgress, downloadProgress, totalProgress, isLoading, progressFetch } = useProgressFetch(new URL('/artifacts', 'http://localhost:8000'))
 
@@ -62,15 +62,13 @@ function reset() {
 </script>
 
 <template>
-    <!-- <div className="navbar bg-base-300">
-        <button className="btn btn-ghost text-xl">Relight Collection</button>
-    </div> -->
-    <div class="breadcrumbs text-sm w-full bg-base-200 text-base-content shadow-sm px-4 py-2">
-        <ul>
-            <li><RouterLink to="/">Relight Collection</RouterLink></li>
-            <li>Upload Artifact</li>
-        </ul>
-    </div>
+    <Header
+        :segments="[
+        { label: 'Collection', dest: '/'},
+        { label: 'Upload' }
+        ]"
+        title="Upload Artifact"
+    />
     
     <div v-if="data">
         <div class="hero bg-base-200 min-h-screen">
@@ -101,7 +99,6 @@ function reset() {
     </div>
     
     <div v-else class="max-w-3xl mx-auto">
-        <p class="text-3xl p-2 py-4">Enter Artifact Details</p>
         
         <!-- <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-lg border p-4">
             <legend class="fieldset-legend">Metadata</legend>

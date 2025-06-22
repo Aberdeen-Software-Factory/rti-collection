@@ -5,30 +5,26 @@ const props = defineProps({
 })
 
 import OpenLimeViewer from '../components/rti/OpenLimeViewer.vue'
-import ImageThumbnailList from '../components/ImageThumbnailList.vue';
 import ArtifactThumbnailList from '../components/ArtifactThumbnailList.vue';
 import ArtifactEditor from '../components/ArtifactEditor.vue'
 import MetadataDisplay from '../components/display/MetadataDisplay.vue';
+import { Artifact } from '@/model/artifact';
+import Header from '@/components/Header.vue';
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { fetchArtifact, updateArtifact, deleteArtifact } from '../backend.js';
 import { useRouter } from 'vue-router'
-import { Artifact } from '@/model/artifact';
+import { useArtifact } from '@/composables/artifact';
 
 const router = useRouter()
 
-const artifact = ref()
+const { artifact, error } = useArtifact(props.id)
 const selectedMedia = ref("")
-const isEditing = ref(false)
 
-const imageFiles = ref([])
-const RTIFiles = ref([])
-
-onMounted(async () => {
-  artifact.value = await fetchArtifact(props.id);
-  selectedMedia.value = getDefaultMedia(artifact.value);
-
-  console.log(artifact.value)
+watch(artifact, (newArtifact) => {
+  if (newArtifact?.RTIs?.length > 0) {
+    selectedMedia.value = getDefaultMedia(newArtifact);
+  }
 })
 
 function getDefaultMedia(artifact) {
@@ -39,15 +35,6 @@ function getDefaultMedia(artifact) {
   } else {
     return ""
   }
-}
-
-// const selectedMedia = ref('webrti')
-function getThumbnailUrl(path) {
-  return new URL(path, "http://localhost:8000/files").toString(); //TODO add the prefix to the openlimeviewer component
-}
-
-async function onEditClicked() {
-  isEditing.value = !isEditing.value
 }
 
 async function onDeleteClicked() {
@@ -61,81 +48,56 @@ async function onDeleteClicked() {
   }
 }
 
-async function handleSubmit(a) {
-  console.log("form", a)
-  console.log(artifact)
-  
-  // event.preventDefault();
-  
-  try {
-    console.log(a)
-    const res = await updateArtifact(a.id, {
-      metadata: a.metadata,
-      images: a.imageFiles,
-      webrtis: a.webrtiFiles,
-      ptms: a.ptmFiles,
-    });
-    console.log(res);
-    isEditing.value = false
-    
-    artifact.value = await fetchArtifact(props.id);
-    selectedMedia.value = getDefaultMedia(artifact.value);
-  } catch (error) {
-    console.log(error)
-  }
-}
 </script>
 
 <template>
-  <RouterLink to="/">Back to Collection</RouterLink>
-  <section v-if="isEditing">
-    <h1>Edit Artifact</h1>
-    <ArtifactEditor v-if="artifact"
-    :artifact="artifact"
-    @submit="handleSubmit"
-    >
-    <button @click="isEditing = false">Cancel</button>
-    <button type="submit">Save</button>
-  </ArtifactEditor>
-</section>
-<div v-if="artifact && !isEditing">
-  <div style="display: flex;">
-    <h1 style="flex-grow: 1;">{{ artifact.metadata.name || "Artifact" }}</h1>
-    <button @click="onEditClicked" class="link-style">Edit</button>
-    <button @click="onDeleteClicked" class="link-style">Delete</button>
+  <Header
+    :segments="[
+    { label: 'Collection', dest: '/'},
+    { label: artifact?.metadata.name }
+    ]"
+    :title="artifact?.metadata.name"
+  />
+  
+  <div v-if="artifact">
+    <OpenLimeViewer :url="selectedMedia"/> 
+    <!-- <NewViewer :url="selectedMedia"/> -->
+    <div class="max-w-340 mx-auto w-full">
+      <div v-if="artifact.RTIs.length > 0" class="md:px-8 pt-4">
+        <p class="py-2">Relightable Images ({{ artifact.RTIs.length }}):</p>
+        <ArtifactThumbnailList
+        v-model="selectedMedia"
+        :options="artifact.RTIs.map((rti) => ({
+          thumbnail: rti.files.find(f => f.endsWith('plane_0.jpg')) || '',
+          value: rti.url
+        }))"
+        />
+      </div>
+      
+      <div v-if="artifact.images.length > 0" class="md:px-8 pt-4">
+        <p class="py-2">Still Images ({{ artifact.RTIs.length }}):</p>
+        <ArtifactThumbnailList
+        v-model="selectedMedia"
+        :options="artifact.images.map((imageUrl) => ({
+          thumbnail: imageUrl,
+          value: imageUrl
+        }))"
+        />
+      </div>
+      
+      <div class="md:px-8 pt-4">
+        <h2 class="text-3xl">Details:</h2>
+        <MetadataDisplay :metadata="artifact.metadata"/>
+      </div>
+      
+      <div class="md:px-8 py-8 flex gap-2">
+        <!-- <h1 style="flex-grow: 1;">{{ artifact.metadata.name || "Artifact" }}</h1> -->
+        <RouterLink :to="`/artifacts/${id}/edit`" class="btn">Edit</RouterLink>
+        <button @click="onDeleteClicked" class="btn">Delete</button>
+      </div>
+      <br/>
+    </div>
   </div>
-  
-  <OpenLimeViewer :url="selectedMedia"/> 
-  <!-- <NewViewer :url="selectedMedia"/> -->
-  
-  <p v-if="artifact.RTIs.length > 0">
-    Relightable Images ({{ artifact.RTIs.length }})
-    <!-- <a href="javascript:void(0) " onclick="document.getElementById('fileUpload').click()">Upload</a>
-    <input 
-    type="file" 
-    id="fileUpload" 
-    style="display: none;" 
-    accept="image/*" 
-    @change="handleFileUpload"
-    /> -->
-  </p>
-  <ArtifactThumbnailList
-  
-  v-model:selected="selectedMedia"
-  :media="artifact.RTIs"
-  />
-  
-  <ImageThumbnailList
-  v-if="artifact.images.length > 0"
-  v-model:selectedUrl="selectedMedia"
-  :urls="artifact.images"
-  />
-  
-  <MetadataDisplay :metadata="artifact.metadata"/>
-  
-  <br/>
-  
-</div>
 </template>
 
 <style scoped>

@@ -1,6 +1,13 @@
+:root {
+  --openlime-color-background: var(--color-neutral);
+  --openlime-color-background-content: var(--color-neutral-content);
+  --openlime-color-light: transparent;
+  --openlime-color-light-active: yellow;
+}
+
 .openlime {
 	position: relative;
-	background-color:#000;
+	background-color: var(--openlime-color-background);
 	height:100%;
 }
 
@@ -127,13 +134,13 @@
 }
 
 .openlime-toolbar path[style] {
-	stroke:white !important;
-	fill:white !important
+	stroke: var(--openlime-color-background-content) !important;
+	fill: var(--openlime-color-background-content) !important;
 }
 
 .openlime-toolbar text {
-	stroke:white !important;
-	fill:white !important
+	stroke: var(--openlime-color-background-content) !important;
+	fill: var(--openlime-color-background-content) !important;
 }
 
 .openlime-toolbar {
@@ -157,11 +164,11 @@
 }
 
 .openlime-light path[style] {
-	fill:#80808011 !important; 
+	fill: var(--openlime-color-light) !important;
 }
 
 .openlime-light-active .openlime-light path[style] {
-	fill:#ffcc00 !important; 
+	fill: var(--openlime-color-light-active) !important;
 }
 
 .openlime-lightdir {

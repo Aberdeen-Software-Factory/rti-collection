@@ -1,59 +1,34 @@
 <script setup>
-const props = defineProps(['media']);
-const selected = defineModel('selected');
+/**
+ * @typedef {Object} ImageOption
+ * @property {string} thumbnail - URL of the thumbnail
+ * @property {string} value - Actual value represented by the image
+ */
 
-import RTIThumbnail from './RTIThumbnail.vue';
+const props = defineProps({
+  options: {
+    type: Array,
+    required: true,
+  },
+});
 
-function getThumbnailUrl(path) {
-  return new URL(path, "http://localhost:8000/").toString();
-}
+const selected = defineModel();
+
 </script>
 
 <template>
-    <div class="image-scroller">
-        <div class="image-list">
-            <RTIThumbnail
-            v-for="(rti, index) in media"
+  <div class="flex flex-nowrap w-full overflow-x-auto gap-4">
+    <div 
+         v-for="(option, index) in options"
+        class="size-30 md:size-40 aspect-1 flex-shrink-0 cursor-pointer overflow-hidden"
+        :class="{ 'border-4 border-primary': selected === option.value }"
+    >
+        <img
             :key="index"
-            :rti="rti"
-            :src="getThumbnailUrl(rti.thumbnailURL)"
-            :class="{ selected: selected === rti.url }"
-            v-on:click="selected = rti.url"
-            />
-        </div>
+            :src="option.thumbnail"
+            class="h-full w-full object-cover transition-transform duration-300 ease-in-out hover:scale-110"
+            @click="selected = option.value"
+        />
     </div>
+  </div>
 </template>
-
-<style scoped>
-.image-scroller {
-    overflow-x: auto;
-    white-space: nowrap;
-    padding: 8px;
-}
-
-.image-list {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-
-img {
-    flex-shrink: 0;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    /* overflow: hidden; */
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-img:hover {
-    transform: scale(1.05);
-}
-
-img.selected {
-    border-color: #007BFF;
-}
-</style>

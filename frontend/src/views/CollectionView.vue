@@ -4,8 +4,9 @@ import Header from '../components/Header.vue';
 </script>
 
 <template>
-    <Header/>
+    <Header :segments="[{ label: 'Collection' }]" title="Artifacts"/>
     <Collection/>
+    <RouterLink to="/upload" class="btn">Upload Artifact</RouterLink>
 </template>
 
 <style scoped>

@@ -5,6 +5,7 @@ import { fetchFiles } from '@/utils';
 import JSZip from 'jszip';
 import FilesInput from './input/FilesInput.vue';
 import MetadataEditor from './input/MetadataEditor.vue';
+import LoadingScreen from './display/LoadingScreen.vue';
 
 import { Artifact } from '@/model/artifact';
 
@@ -71,7 +72,9 @@ onMounted(() => {
 </script>
 
 <template>
-    <h1 v-if="isLoading">Loading...</h1>
+    <div v-if="isLoading">
+        <LoadingScreen/>
+    </div>
     <form v-else @submit.prevent="handleSubmit" class="grid max-w-2xl mx-auto p-2 w-full gap-4">
         <fieldset class="fieldset">
             <!-- <legend class="fieldset-legend text-2xl">Files</legend> -->
