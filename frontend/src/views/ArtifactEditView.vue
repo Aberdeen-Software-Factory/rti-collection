@@ -56,7 +56,9 @@ async function handleSubmit(a) {
         :artifact="artifact"
         @submit="handleSubmit"
     >
-        <RouterLink :to="`/artifacts/${id}`" replace class="btn">Cancel</RouterLink>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <div class="flex w-full gap-2 my-8">
+            <RouterLink :to="`/artifacts/${id}`" replace class="btn flex-grow-1">Cancel</RouterLink>
+            <button type="submit" class="btn btn-primary flex-grow-1">Save</button>
+        </div>
     </ArtifactEditor>
 </template>

@@ -27,13 +27,19 @@ class Artifact {
     }
 }
 
+/**
+* @typedef {Object} ArtifactPreviewParams
+* @property {string} id
+* @property {MetadataParams} metadata
+* @property {string} thumbnailURL
+*/
 class ArtifactPreview {
-    constructor({ id, title, date, num_images, num_rtis, thumbnailURL }) {
+    /**
+     * @param {ArtifactPreviewParams} params 
+     */
+    constructor({ id, metadata, thumbnailURL }) {
         this.id = id;
-        this.title = title;
-        this.date = date;
-        this.imageCount = num_images;
-        this.RTICount = num_rtis;
+        this.metadata = metadata;
         this.thumbnailURL = thumbnailURL;
     }
 }

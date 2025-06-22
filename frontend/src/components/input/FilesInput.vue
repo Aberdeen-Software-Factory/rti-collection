@@ -140,10 +140,11 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
         <!-- <input id="RTIs" type="file" multiple @change="onRTISelected"/> -->
         <label class="label">Relight Web Format Files:</label>
         <div class="grid grid-cols-3 gap-4" v-if="webrtis.length">
-            <div class="aspect-square object-cover" v-for="(files, index) in webrtis" :key="index" @click="removeRTI(index)" title="Click to remove">
-                <p>{{ files.length }} files</p>
+            <div class="aspect-square object-cover"
+             v-for="(file, index) in webrtis" :key="file.name" @click="() => removeRTI(index)" title="Click to remove">
+                <p>{{ file.name }} files</p>
                 <!-- <img :src="blobUrl(getPlane0(files))" /> -->
-                <ZipPreview :zipFile="files" :filename="'plane_0.jpg'"/>
+                <ZipPreview :zipFile="file" :filename="'plane_0.jpg'"/>
             </div>
         </div>
     </div>

@@ -54,9 +54,9 @@ async function onDeleteClicked() {
   <Header
     :segments="[
     { label: 'Collection', dest: '/'},
-    { label: artifact?.metadata.name }
+    { label: artifact?.metadata.name || 'Artifact'}
     ]"
-    :title="artifact?.metadata.name"
+    :title="artifact?.metadata.name || 'Artifact'"
   />
   
   <div v-if="artifact">

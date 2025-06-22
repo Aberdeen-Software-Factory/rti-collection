@@ -51,7 +51,7 @@ async function downloadFiles() {
 
     const zipBlob = await zip.generateAsync({ type: "blob" }); // or "base64", "uint8array", etc.
 
-    const zipFile = new File([zipBlob], "archive.zip", { type: zipBlob.type })
+    const zipFile = new File([zipBlob], crypto.randomUUID(), { type: zipBlob.type })
     zippedWebrtis.push(zipFile);
   }
   

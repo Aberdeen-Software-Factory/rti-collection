@@ -45,8 +45,8 @@ watch(selectedTheme, (newTheme) => {
 </script>
 
 <template>
-  <div class="dropdown mb-4">
-    <div tabindex="0" role="button" class="btn m-1">
+  <div class="dropdown">
+    <div tabindex="0" role="button" class="btn">
       Theme
       <svg
         width="12px"
