@@ -8,7 +8,7 @@ from slugify import slugify
 
 from ..model.model import Metadata
 from ..utils.auth import authenticate
-from ..utils.io import cleanup
+from ..utils.io import cleanup, delete_contents
 from ..utils.io_savers import save_artifact
 from ..utils.paths import path_to_artifact
 
@@ -37,6 +37,9 @@ async def create_artifact(
         # Generate a unique artifact ID
         artifact_id = generate_artifact_id(metadata_obj.name or "a")
         print("ID:", artifact_id)
+
+        artifact_dir = path_to_artifact(id)
+        artifact_dir.mkdir(parents=True)
 
         webrti_ids = save_artifact(
             artifact_id,
@@ -72,7 +75,7 @@ async def update_artifact(
     artifact_dir = path_to_artifact(id)
 
     try:
-        shutil.rmtree(str(artifact_dir))
+        delete_contents(artifact_dir)
         save_artifact(id, Metadata.model_validate_json(metadata or "{}"), images or [], webrtis or [], ptms or [])
     except FileNotFoundError:
         raise HTTPException(404, f"Artifact with ID '{id}' not found.")
