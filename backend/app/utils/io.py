@@ -14,3 +14,10 @@ def cleanup(artifact_id: str):
         shutil.rmtree(str(path_to_artifact(artifact_id)))
     except FileNotFoundError:
         return
+
+def delete_contents(dir: Path):
+    for item in dir.iterdir():
+        try:
+            shutil.rmtree(item)
+        except NotADirectoryError:
+            item.unlink()

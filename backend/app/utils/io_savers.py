@@ -110,7 +110,6 @@ def save_artifact(
     print("saving", id, metadata, images, webrtis, ptms)
     # Create directory
     artifact_dir = path_to_artifact(id)
-    artifact_dir.mkdir(parents=True)
 
     # Upload artifact metadata
     save_metadata(artifact_dir, metadata)
