@@ -107,6 +107,7 @@ def save_artifact(
     webrtis: list[UploadFile],
     ptms: list[UploadFile],
 ) -> list[str]:
+    print("saving", id, metadata, images, webrtis, ptms)
     # Create directory
     artifact_dir = path_to_artifact(id)
     artifact_dir.mkdir(parents=True)
@@ -119,7 +120,7 @@ def save_artifact(
     save_files(images_dir, images or [])
 
     webrtis_dir = get_path_to_webrtis(artifact_dir)
-    webrti_ids = save_webrtis(webrtis_dir, webrtis)
+    webrti_ids = save_webrtis(webrtis_dir, webrtis or [])
 
     ptms_dir = get_path_to_ptms(artifact_dir)
     for ptm in ptms or []:
