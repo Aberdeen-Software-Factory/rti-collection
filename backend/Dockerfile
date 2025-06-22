@@ -43,7 +43,7 @@ COPY --from=builder /relight/relight-cli/relight-cli /usr/local/bin/relight-cli
 COPY ./app/ /app/
 
 # Install FastAPI dependencies
-RUN pip install fastapi uvicorn python-multipart
+RUN pip install fastapi uvicorn python-multipart python-slugify
 
 # Expose port and run FastAPI
 EXPOSE 8000

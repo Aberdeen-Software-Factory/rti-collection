@@ -1,9 +1,10 @@
 import shutil
-import uuid
+from secrets import token_hex
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Path, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
+from slugify import slugify
 
 from ..model.model import Metadata
 from ..utils.auth import authenticate
@@ -16,6 +17,12 @@ authenticated_router = APIRouter(
     dependencies=[Depends(authenticate)]
 )
 
+def generate_artifact_id(name: str) -> str:
+    slug = slugify(name)[:50]
+    suffix = token_hex(3)
+    return f"{slug}_{suffix}"
+
+
 @authenticated_router.post("/")
 async def create_artifact(
     metadata: str = Form(None),
@@ -23,14 +30,17 @@ async def create_artifact(
     webrtis: list[UploadFile] = File(None), # .zip files containing info.json+plane_*.jpg as in Relight Web Format
     ptms: list[UploadFile] = File(None),    # .ptm files that can be converted to Relight Web Format via the relight-cli
 ):
-    # Generate a unique artifact ID
-    artifact_id = str(uuid.uuid4())
-    print("ID:", artifact_id)
-
     try:
+        metadata_obj = Metadata.model_validate_json(metadata or "{}")
+        print(metadata_obj)
+
+        # Generate a unique artifact ID
+        artifact_id = generate_artifact_id(metadata_obj.name or "a")
+        print("ID:", artifact_id)
+
         webrti_ids = save_artifact(
             artifact_id,
-            Metadata.model_validate_json(metadata or "{}"),
+            metadata_obj,
             images or [],
             webrtis or [],
             ptms or [],
