@@ -4,8 +4,9 @@ import { assembleFormData, createArtifact } from '../backend.js';
 import { useRouter } from 'vue-router'
 import { useProgressFetch } from '@/composables/progressFetch';
 import { watch, ref } from 'vue';
-import ProgressBar from '@/components/display/ProgressBar.vue';
+import ProgressHero from '@/components/display/ProgressHero.vue';
 import Header from '@/components/Header.vue';
+import ErrorHero from '@/components/display/ErrorHero.vue';
 
 const router = useRouter()
 const { data, error, uploadProgress, downloadProgress, totalProgress, isLoading, progressFetch } = useProgressFetch(new URL('/artifacts', 'http://localhost:8000'))
@@ -88,15 +89,13 @@ function reset() {
         </div>
     </div>
 
-    <div v-else-if="isLoading || data || error" >
-        <ProgressBar :progress="totalProgress">
-            <p>Data: {{ data }}</p>
-            <p>Error: {{ error }}</p>
-            <!-- <p>Upload Progress: {{ uploadProgress }}</p>
-            <p>Download Progress: {{ downloadProgress }}</p>
-            <p>Total Progress: {{ totalProgress }}</p> -->
-        </ProgressBar>
-    </div>
+    <template v-else-if="error">
+        <ErrorHero :error="error"/>
+    </template>
+
+    <template v-else-if="isLoading" >
+        <ProgressHero :progress="totalProgress"/>
+    </template>
     
     <div v-else class="max-w-3xl mx-auto">
         
