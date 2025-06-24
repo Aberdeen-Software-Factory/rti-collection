@@ -8,8 +8,10 @@ import ProgressHero from '@/components/display/ProgressHero.vue';
 import Header from '@/components/Header.vue';
 import ErrorHero from '@/components/display/ErrorHero.vue';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
 const router = useRouter()
-const { data, error, uploadProgress, downloadProgress, totalProgress, isLoading, progressFetch } = useProgressFetch(new URL('/artifacts', 'http://localhost:8000'))
+const { data, error, uploadProgress, downloadProgress, totalProgress, isLoading, progressFetch } = useProgressFetch(new URL('/artifacts', API_BASE_URL))
 
 watch([data, error], ([newData, newError]) => {
     if (newError) {
