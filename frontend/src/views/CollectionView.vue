@@ -5,7 +5,7 @@ import Header from '../components/Header.vue';
 
 <template>
     <Header :segments="[{ label: 'Collection' }]" title="Artifacts"/>
-    <Collection class="bg-base-200 flex-grow"/>
+    <Collection/>
 </template>
 
 <style scoped>

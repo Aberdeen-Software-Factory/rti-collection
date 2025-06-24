@@ -60,19 +60,10 @@ def load_artifact(path: Path, request: Request) -> Artifact:
     )
 
 
-def load_artifact_previews(path: Path, request: Request) -> list[ArtifactPreview]:
-    try:
-        sorted_entries = sorted(
-            path.iterdir(),
-            key=lambda p: p.stat().st_ctime,  # Sort by creation time
-            reverse=True,
-        )
-    except FileNotFoundError:
-        return []
-
+def load_artifact_previews(paths: list[Path], request: Request) -> list[ArtifactPreview]:
     return [
         load_artifact_preview(artifact_path, request)
-        for artifact_path in sorted_entries if artifact_path.is_dir()
+        for artifact_path in paths
     ]
 
 

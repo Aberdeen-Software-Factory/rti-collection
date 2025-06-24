@@ -1,5 +1,5 @@
 import { computed, toValue } from 'vue'
-import { useFetch } from './fetch' // or wherever your composable is
+import { useFetch } from './useFetch' // or wherever your composable is
 import { Artifact } from '@/model/artifact'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL

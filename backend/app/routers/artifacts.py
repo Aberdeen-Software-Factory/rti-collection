@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Path, Request
+import math
+
+from fastapi import APIRouter, Path, Query, Request
 
 from ..schemas.model import ArtifactResponse, ArtifactsResponse
 from ..utils.io_loaders import load_artifact, load_artifact_previews
@@ -12,11 +14,29 @@ router = APIRouter(
 @router.get("/")
 async def read_artifacts(
     request: Request,
+    page: int = Query(1, ge=1, description="Page number"),
+    page_size: int = Query(50, ge=1, description="Number of artifacts per page"),
 ) -> ArtifactsResponse:
-    artifacts = load_artifact_previews(get_artifacts_root(), request)
+    try:
+        sorted_entries = sorted(
+            [p for p in get_artifacts_root().iterdir() if p.is_dir()],
+            key=lambda p: p.stat().st_ctime,  # Sort by creation time
+            reverse=True,
+        )
+
+        start = (page - 1) * page_size
+        end = start + page_size
+        sorted_paged_entries = sorted_entries[start:end]
+    except FileNotFoundError:
+        return ArtifactResponse(artifact=[], page=page, pages=0)
+
+    artifacts = load_artifact_previews(sorted_paged_entries, request)
+    pages = math.ceil(len(sorted_entries) / page_size)
 
     return ArtifactsResponse(
         artifacts=artifacts,
+        page=page,
+        pages=pages,
     )
 
 

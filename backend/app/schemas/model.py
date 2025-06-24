@@ -62,3 +62,5 @@ class ArtifactPreview(BaseModel):
 
 class ArtifactsResponse(BaseModel):
     artifacts: list[ArtifactPreview]
+    page: int
+    pages: int

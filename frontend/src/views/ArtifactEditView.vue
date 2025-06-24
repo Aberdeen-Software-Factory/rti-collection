@@ -1,6 +1,6 @@
 <script setup>
 import ArtifactEditor from '../components/ArtifactEditor.vue'
-import { useArtifact } from '../composables/artifact'
+import { useArtifact } from '../composables/useArtifact'
 import Header from '../components/Header.vue'
 import { updateArtifact } from '../backend'
 import { useRouter } from 'vue-router'

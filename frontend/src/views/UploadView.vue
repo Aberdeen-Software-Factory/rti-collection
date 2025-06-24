@@ -2,7 +2,7 @@
 import ArtifactEditor from '../components/ArtifactEditor.vue';
 import { assembleFormData, createArtifact } from '../backend.js';
 import { useRouter } from 'vue-router'
-import { useProgressFetch } from '@/composables/progressFetch';
+import { useProgressFetch } from '@/composables/useProgressFetch';
 import { watch, ref } from 'vue';
 import ProgressHero from '@/components/display/ProgressHero.vue';
 import Header from '@/components/Header.vue';
