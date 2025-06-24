@@ -8,18 +8,30 @@ import LoadingHero from './display/LoadingHero.vue';
 const route = useRoute()
 const router = useRouter()
 
+const pageSizeOptions = [25, 50, 100]
 const selectedPage = ref(parseInt(route.query.page) || 1)
+const selectedPageSize = ref(parseInt(route.query.page_size) || pageSizeOptions[0])
 
-watch(selectedPage, (newPage) => {
-  router.replace({ query: { ...route.query, page: newPage } })
-})
+const { artifacts, currentPage, totalPages, error, loading } = useArtifacts(selectedPage, selectedPageSize)
 
-const { artifacts, currentPage, totalPages, error, loading } = useArtifacts(selectedPage)
+watch(
+  [currentPage, selectedPageSize],
+  ([newPage, newPageSize]) => {
+    router.replace({
+      query: {
+        ...route.query,
+        page: newPage,
+        page_size: newPageSize
+      }
+    })
+  },
+  // { immediate: true }
+)
 </script>
 
 <template>
   <template v-if="loading">
-    <LoadingHero/>
+    <LoadingHero />
   </template>
 
   <div v-else-if="artifacts.length > 0" class="flex-grow bg-base-200">
@@ -30,24 +42,43 @@ const { artifacts, currentPage, totalPages, error, loading } = useArtifacts(sele
         </RouterLink>
       </div>
 
-      <div class="join justify-end p-4 md:p-8">
-        <button v-if="currentPage > 1" class="join-item btn btn-square btn-outline"
-          :class="{ 'btn-disabled': currentPage <= 1 }" @click="selectedPage -= 1">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-          </svg>
+      <div class="flex justify-end items-center gap-4 p-4 md:p-8">
+        <div class="join">
+          <button class="join-item btn btn-outline pointer-events-none select-none" tabindex="-1">
+            Results per page
+          </button>
+          <select v-model="selectedPageSize"
+            class="join-item select border-[var(--border)] border-base-content bg-transparent text-base-content font-medium cursor-pointer">
+            <option v-for="size in pageSizeOptions" :key="size" :value="size">
+              {{ size }}
+            </option>
+            <option v-if="!pageSizeOptions.includes(selectedPageSize)" :key="selectedPageSize"
+              :value="selectedPageSize">
+              {{ selectedPageSize }}</option>
+          </select>
+        </div>
 
-        </button>
-        <button class="join-item btn btn-outline">Page {{ currentPage }}</button>
-        <button v-if="currentPage < totalPages" class="join-item btn btn-square btn-outline"
-          :class="{ 'btn-disabled': currentPage >= totalPages }" @click="selectedPage += 1">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-          </svg>
+        <div class="join">
+          <button v-if="currentPage > 1" class="join-item btn btn-square btn-outline"
+            :class="{ 'btn-disabled': currentPage <= 1 }" @click="selectedPage = currentPage - 1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
 
-        </button>
+          </button>
+
+          <button class="join-item btn btn-outline pointer-events-none select-none">Page {{ currentPage }}</button>
+
+          <button v-if="currentPage < totalPages" class="join-item btn btn-square btn-outline"
+            :class="{ 'btn-disabled': currentPage >= totalPages }" @click="selectedPage = currentPage + 1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+
+          </button>
+        </div>
       </div>
     </div>
   </div>
