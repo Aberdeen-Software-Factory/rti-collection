@@ -91,9 +91,8 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
 </script>
 
 <template>
-    <div>
-    <label class="label">Supported file formats: .ptm, .jpg, .zip</label>
-    <label class="btn cursor-pointer">
+    <div class="self-baseline">
+    <label class="btn btn-accent self-baseline w-full">
         Add Files
         <input
             id="images"
@@ -103,6 +102,8 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
             multiple
             @change="onImageSelected" />
     </label>
+        <label class="label self-baseline">Supported file formats: .ptm, .jpg, .zip</label>
+
     <!-- <div class="form-row">
         <label class="form-label" for="images">{{ label }}</label>
         <div class="form-field">
@@ -118,17 +119,24 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
     
     <div v-if="ptms.length" class="form-row">
         <div class="form-field">
-            <label class="label">Polynomial Texture Map (.ptm) Files:</label>
-            <div class="thumbnail-list" v-if="ptms.length">
+            <label class="label text-sm py-2">Polynomial Texture Map (.ptm) Files:</label>
+            <div class="flex flex-col gap-2" v-if="ptms.length">
                 <div
-                class="thumb"
-                v-for="(file, index) in ptms"
-                :key="file.name"
-                @click="removePtm(index)"
-                title="Click to remove"
+                    v-for="(file, index) in ptms"
+                    class="card bg-base-100 border border-base-100 flex flex-row p-2 items-center"
+                    :key="file.name"
+                    title="Click to remove"
                 >
-                <p>{{ file.name }}</p>
-                <!-- <img :src="blobUrl(file)" :alt="file.name" /> -->
+                    <p class="text-sm flex-grow align-middle">{{ file.name }}</p>
+                    <!-- <img :src="blobUrl(file)" :alt="file.name" /> -->
+                    <button
+                        class="btn btn-accent btn-sm btn-square"
+                        @click="() => removePtm(index)"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
             </div>
         </div>
     </div>
@@ -138,13 +146,23 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
 <div v-if="webrtis.length" class="form-row">
     <div class="form-field">
         <!-- <input id="RTIs" type="file" multiple @change="onRTISelected"/> -->
-        <label class="label">Relight Web Format Files:</label>
-        <div class="grid grid-cols-3 gap-4" v-if="webrtis.length">
-            <div class="aspect-square object-cover"
-             v-for="(file, index) in webrtis" :key="file.name" @click="() => removeRTI(index)" title="Click to remove">
-                <p>{{ file.name }} files</p>
-                <!-- <img :src="blobUrl(getPlane0(files))" /> -->
-                <ZipPreview :zipFile="file" :filename="'plane_0.jpg'"/>
+        <label class="label text-sm py-2">Relight Web Format Files:</label>
+        <div class="grid grid-cols-3 gap-2" v-if="webrtis.length">
+            <div
+                v-for="(file, index) in webrtis"
+                :key="file.name"
+                class="relative card card-bordered aspect-square object-cover bg-base-100 overflow-hidden border border-base-200"
+                title="Click to remove"
+            >
+                <ZipPreview :zipFile="file" :filename="'plane_0.jpg'" class="h-full w-full object-cover"/>
+                <button
+                    class="btn btn-accent btn-sm btn-square absolute top-2 right-2 z-10"
+                    @click="() => removeRTI(index)"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
@@ -153,16 +171,23 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
 <div v-if="images.length" class="form-row">
     <label class="form-label" for="images"></label>
     <div class="form-field">
-        <label class="label">Still Image Files:</label>
+        <label class="label text-sm py-2">Still Image Files:</label>
         <div class="grid grid-cols-3 gap-4" v-if="images.length">
             <div
-            class="thumb"
-            v-for="(file, index) in images"
-            :key="file.name"
-            @click="removeImage(index)"
-            title="Click to remove"
+                class="relative card card-bordered aspect-square object-cover bg-base-100 overflow-hidden border border-base-200"
+                v-for="(file, index) in images"
+                :key="file.name"
+                title="Click to remove"
             >
             <img :src="blobUrl(file)" :alt="file.name" />
+            <button
+                class="btn btn-accent btn-sm btn-square absolute top-2 right-2 z-10"
+                @click="() => removeImage(index)"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </button>
         </div>
     </div>
 </div>

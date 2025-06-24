@@ -6,6 +6,7 @@ import JSZip from 'jszip';
 import FilesInput from './input/FilesInput.vue';
 import MetadataEditor from './input/MetadataEditor.vue';
 import LoadingHero from './display/LoadingHero.vue';
+import ErrorHero from './display/ErrorHero.vue';
 
 import { Artifact } from '@/model/artifact';
 
@@ -17,6 +18,7 @@ const { artifact } = defineProps({
 });
 
 const isLoading = ref(true);
+const error = ref(null)
 
 const emit = defineEmits(['submit'])
 console.log(artifact)
@@ -65,8 +67,13 @@ async function downloadFiles() {
   isLoading.value = false;
 }
 
-onMounted(() => {
-    downloadFiles()
+onMounted(async () => {
+    try {
+        await downloadFiles() //TODO: convert to composable function
+    } catch (err) {
+        isLoading.value = false
+        error.value = err
+    }
 })
 
 </script>
@@ -75,6 +82,11 @@ onMounted(() => {
     <template v-if="isLoading">
         <LoadingHero/>
     </template>
+    
+    <template v-else-if="error">
+        <ErrorHero :error="error"/>
+    </template>
+
     <form v-else @submit.prevent="handleSubmit" class="grid max-w-2xl mx-auto p-2 w-full gap-4">
         <fieldset class="fieldset">
             <!-- <legend class="fieldset-legend text-2xl">Files</legend> -->
@@ -85,16 +97,17 @@ onMounted(() => {
             <!-- <legend class="fieldset-legend text-2xl">Metadata</legend> -->
 
             <div class="grid gap-x-4 gap-y-2 grid-cols-1 md:[grid-template-columns:auto_1fr]">
-                <label>Files:</label>
+                <label class="text-sm text-base-content/50 self-baseline">Files:</label>
                 <FilesInput
-                label="Media"
-                v-model:images="form.imageFiles"
-                v-model:webrtis="form.webrtiFiles"
-                v-model:ptms="form.ptmFiles"
-            />
-            
-            <MetadataEditor v-model="form.metadata"/>
-        </div>
+                    label="Media"
+                    v-model:images="form.imageFiles"
+                    v-model:webrtis="form.webrtiFiles"
+                    v-model:ptms="form.ptmFiles"
+                    class="mb-4"
+                />
+                
+                <MetadataEditor v-model="form.metadata"/>
+            </div>
 
         
     </fieldset>

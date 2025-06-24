@@ -97,7 +97,7 @@ function reset() {
         <ProgressHero :progress="totalProgress"/>
     </template>
     
-    <div v-else class="max-w-3xl mx-auto">
+    <div v-else class="bg-base-200">
         
         <!-- <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-lg border p-4">
             <legend class="fieldset-legend">Metadata</legend>

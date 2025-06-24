@@ -62,7 +62,7 @@ async function onDeleteClicked() {
   <div v-if="artifact">
     <OpenLimeViewer :url="selectedMedia"/> 
     <!-- <NewViewer :url="selectedMedia"/> -->
-    <div class="max-w-340 mx-auto w-full">
+    <div class="max-w-340 mx-auto w-full bg-base-300">
       <div v-if="artifact.RTIs.length > 0" class="md:px-8 pt-4">
         <p class="py-2">Relightable Images ({{ artifact.RTIs.length }}):</p>
         <ArtifactThumbnailList
@@ -90,12 +90,11 @@ async function onDeleteClicked() {
         <MetadataDisplay :metadata="artifact.metadata"/>
       </div>
       
-      <div class="md:px-8 py-8 flex gap-2">
+      <div class="md:px-8 py-8 flex gap-2 border-t border-base-300 bg-base-200">
         <!-- <h1 style="flex-grow: 1;">{{ artifact.metadata.name || "Artifact" }}</h1> -->
         <RouterLink :to="`/artifacts/${id}/edit`" class="btn">Edit</RouterLink>
         <button @click="onDeleteClicked" class="btn">Delete</button>
       </div>
-      <br/>
     </div>
   </div>
 </template>

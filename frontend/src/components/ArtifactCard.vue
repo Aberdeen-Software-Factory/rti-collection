@@ -15,7 +15,7 @@ const { artifact } = defineProps({
   <section class="artifact-card grid">
     <!-- <ArtifactCardImage :artifact/> -->
     <div 
-        class="h-full w-full aspect-square cursor-pointer overflow-hidden border-2 border-base-200 bg-neutral content-center place-content-center text-center text-neutral-content"
+        class="h-full w-full aspect-square cursor-pointer overflow-hidden border border-base-300 bg-neutral content-center place-content-center text-center text-neutral-content"
     >
         <img v-if="artifact.thumbnailURL"
             :src="artifact.thumbnailURL"

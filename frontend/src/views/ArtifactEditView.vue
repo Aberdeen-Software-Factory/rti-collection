@@ -51,14 +51,16 @@ async function handleSubmit(a) {
     <p v-if="error">Error: {{ error }}</p>
     <p v-if="editError">Edit Error: {{ editError }}</p>
 
-    <ArtifactEditor
-        v-if="artifact"
-        :artifact="artifact"
-        @submit="handleSubmit"
-    >
-        <div class="flex w-full gap-2 my-8">
-            <RouterLink :to="`/artifacts/${id}`" replace class="btn flex-grow-1">Cancel</RouterLink>
-            <button type="submit" class="btn btn-primary flex-grow-1">Save</button>
-        </div>
-    </ArtifactEditor>
+    <div class="bg-base-300 flex-grow flex">
+        <ArtifactEditor
+            v-if="artifact"
+            :artifact="artifact"
+            @submit="handleSubmit"
+        >
+            <div class="flex w-full gap-2 my-8">
+                <RouterLink :to="`/artifacts/${id}`" replace class="btn flex-grow-1">Cancel</RouterLink>
+                <button type="submit" class="btn btn-primary flex-grow-1">Save</button>
+            </div>
+        </ArtifactEditor>
+    </div>
 </template>

@@ -17,8 +17,8 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="w-full bg-base-300 text-base-content">
-        <div class="flex flex-wrap max-w-340 mx-auto md:p-8 gap-2 items-center">
+    <div class="w-full bg-base-100 text-base-content border-b border-base-300">
+        <div class="flex flex-wrap max-w-340 mx-auto p-4 md:p-8 gap-2 items-center">
             <div class="flex-grow-1">
                 <div>
                     <div class="breadcrumbs text-sm">
@@ -41,7 +41,7 @@ const props = defineProps({
 
                 
             </div>
-            <div class="flex gap-2 my-2">
+            <div class="flex gap-2">
                 <ThemePicker/>
                 <RouterLink to="/upload" class="btn">Upload Artifact</RouterLink>
             </div>
