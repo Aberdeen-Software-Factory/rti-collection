@@ -72,7 +72,7 @@ def load_artifact_previews(path: Path, request: Request) -> list[ArtifactPreview
 
     return [
         load_artifact_preview(artifact_path, request)
-        for artifact_path in sorted_entries
+        for artifact_path in sorted_entries if artifact_path.is_dir()
     ]
 
 
