@@ -6,7 +6,7 @@ from pathlib import Path
 
 from fastapi import UploadFile
 
-from ..model.model import Metadata
+from ..schemas.model import Metadata
 from .paths import (
     get_path_to_images,
     get_path_to_ptms,

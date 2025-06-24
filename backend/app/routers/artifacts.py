@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Path, Request
 
-from ..model.model import ArtifactResponse, ArtifactsResponse
+from ..schemas.model import ArtifactResponse, ArtifactsResponse
 from ..utils.io_loaders import load_artifact, load_artifact_previews
 from ..utils.paths import get_artifacts_root, path_to_artifact
 

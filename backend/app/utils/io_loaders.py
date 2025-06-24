@@ -3,7 +3,7 @@ from pathlib import Path
 from fastapi import HTTPException, Request
 from pydantic import HttpUrl, ValidationError
 
-from ..model.model import Artifact, ArtifactPreview, Metadata, RelightWebMedia, Rtis
+from ..schemas.model import Artifact, ArtifactPreview, Metadata, RelightWebMedia, Rtis
 from .io import find_first_in
 from .url import get_static_file_url
 

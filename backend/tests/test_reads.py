@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from app.main import app
 from pathlib import Path
-from app.model.model import ArtifactResponse, ArtifactsResponse
+from app.schemas.model import ArtifactResponse, ArtifactsResponse
 
 @pytest.fixture
 def client_with_temp_upload(tmp_path, monkeypatch):
