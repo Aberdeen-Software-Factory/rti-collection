@@ -1,6 +1,4 @@
 <script setup>
-import ArtifactCardImage from './ArtifactCardImage.vue'
-
 /**
  * @typedef {import('../model/artifact').ArtifactPreview} ArtifactPreview
  */
@@ -13,9 +11,8 @@ const { artifact } = defineProps({
 
 <template>
   <section class="artifact-card grid">
-    <!-- <ArtifactCardImage :artifact/> -->
     <div 
-        class="h-full w-full aspect-square cursor-pointer overflow-hidden border border-base-300 bg-neutral content-center place-content-center text-center text-neutral-content"
+        class="rounded-box h-full w-full aspect-square cursor-pointer overflow-hidden border border-base-300 bg-neutral content-center place-content-center text-center text-neutral-content"
     >
         <img v-if="artifact.thumbnailURL"
             :src="artifact.thumbnailURL"
@@ -32,8 +29,8 @@ const { artifact } = defineProps({
 </template>
 
 <style scoped>
-.artifact-card:hover ::v-deep img,
-.artifact-card:hover ::v-deep p {
+.artifact-card:hover :deep(img),
+.artifact-card:hover :deep(p) {
   transform: scale(1.10);
 }
 </style>
