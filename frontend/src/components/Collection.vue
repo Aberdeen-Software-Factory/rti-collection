@@ -48,7 +48,7 @@ watch(
             Results per page
           </button>
           <select v-model="selectedPageSize"
-            class="join-item select border-[var(--border)] border-base-content bg-transparent text-base-content font-medium cursor-pointer">
+            class="join-item select border-[var(--border)] border-base-content bg-transparent text-base-content font-medium cursor-pointer w-fit">
             <option v-for="size in pageSizeOptions" :key="size" :value="size">
               {{ size }}
             </option>
@@ -65,7 +65,6 @@ watch(
               stroke="currentColor" class="size-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
             </svg>
-
           </button>
 
           <button class="join-item btn btn-outline pointer-events-none select-none">Page {{ currentPage }}</button>
