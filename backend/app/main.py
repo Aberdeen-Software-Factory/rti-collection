@@ -19,7 +19,8 @@ app.add_middleware(
     allow_origins=origins,  # or ["*"] for all origins (not recommended in production)
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["*"],
+    allow_headers=["Authorization", "Content-Type"],
+    max_age=100,
 )
 
 app.include_router(artifacts.router)
