@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from .routers import artifacts, authenticated_artifacts, ptm_to_rti
+from .routers import artifact_reads, artifact_writes, ptm_to_rti
 from .utils.paths import get_artifacts_root
 
 app = FastAPI()
@@ -23,8 +23,8 @@ app.add_middleware(
     max_age=100,
 )
 
-app.include_router(artifacts.router)
-app.include_router(authenticated_artifacts.authenticated_router)
+app.include_router(artifact_reads.router)
+app.include_router(artifact_writes.authenticated_router)
 app.include_router(ptm_to_rti.router)
 
 

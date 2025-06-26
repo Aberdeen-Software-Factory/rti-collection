@@ -31,7 +31,7 @@ def load_images(path: Path, request: Request) -> list[HttpUrl]:
 def load_webrtis(path: Path, request: Request) -> list[RelightWebMedia]:
     """Return a list of webrtis contained within the subdirectories of path."""
     try:
-        return [load_webrti(subpath, request) for subpath in path.iterdir()]
+        return [load_webrti(subpath, request) for subpath in path.iterdir() if subpath.is_dir()]
     except FileNotFoundError:
         return []
 

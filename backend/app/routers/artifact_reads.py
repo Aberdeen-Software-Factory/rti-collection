@@ -23,20 +23,22 @@ async def read_artifacts(
             key=lambda p: p.stat().st_ctime,  # Sort by creation time
             reverse=True,
         )
-
-        start = (page - 1) * page_size
+        
+        total_pages = math.ceil(len(sorted_entries) / page_size)
+        valid_page = min(page, total_pages)
+        
+        start = (valid_page - 1) * page_size
         end = start + page_size
         sorted_paged_entries = sorted_entries[start:end]
     except FileNotFoundError:
         return ArtifactResponse(artifact=[], page=page, pages=0)
 
     artifacts = load_artifact_previews(sorted_paged_entries, request)
-    pages = math.ceil(len(sorted_entries) / page_size)
 
     return ArtifactsResponse(
         artifacts=artifacts,
-        page=page,
-        pages=pages,
+        page=valid_page,
+        pages=total_pages,
     )
 
 
