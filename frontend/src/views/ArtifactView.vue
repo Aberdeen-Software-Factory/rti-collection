@@ -1,14 +1,16 @@
 <script setup>
-import OpenLimeViewer from '../components/rti/OpenLimeViewer.vue'
-import ArtifactThumbnailList from '../components/ArtifactThumbnailList.vue';
-import MetadataDisplay from '../components/display/MetadataDisplay.vue';
-import { Artifact } from '@/model/artifact';
+import OpenLimeViewer from '@/components/rti/OpenLimeViewer.vue'
+import ArtifactThumbnailList from '@/components/ArtifactThumbnailList.vue';
+import MetadataDisplay from '@/components/display/MetadataDisplay.vue';
+import Artifact from '@/models/Artifact';
 import Header from '@/components/Header.vue';
 
 import { ref, watch } from 'vue';
-import { deleteArtifact } from '../backend.js';
+import { deleteArtifact } from '@/backend.js';
 import { useRouter } from 'vue-router'
 import { useArtifact } from '@/composables/useArtifact';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 const props = defineProps({
   id: String,
@@ -17,24 +19,12 @@ const props = defineProps({
 
 const router = useRouter()
 
-const { artifact, error } = useArtifact(props.id)
+const { artifact, error, loading } = useArtifact(props.id)
 const selectedMedia = ref("")
 
 watch(artifact, (newArtifact) => {
-  if (newArtifact?.RTIs?.length > 0) {
-    selectedMedia.value = getDefaultMedia(newArtifact);
-  }
+  selectedMedia.value = newArtifact.defaultMedia
 })
-
-function getDefaultMedia(artifact) {
-  if (artifact.RTIs.length > 0) {
-    return artifact.RTIs[0].url
-  } else if (artifact.images.length > 0) {
-    return artifact.images[0]
-  } else {
-    return ""
-  }
-}
 
 async function onDeleteClicked() {
   if (confirm("Are you sure you want to delete this artifact? This action cannot be undone.")) {
@@ -60,16 +50,16 @@ async function onDeleteClicked() {
     <!-- <NewViewer :url="selectedMedia"/> -->
     <div class="bg-base-300">
       <div class="max-w-340 mx-auto">
-        <div v-if="artifact.RTIs.length > 0" class="md:px-8 pt-4">
-          <p class="py-2">Relightable Images ({{ artifact.RTIs.length }}):</p>
-          <ArtifactThumbnailList v-model="selectedMedia" :options="artifact.RTIs.map((rti) => ({
-            thumbnail: rti.files.find(f => f.endsWith('plane_0.jpg')) || '',
+        <div v-if="artifact.rtis.length > 0" class="md:px-8 pt-4">
+          <p class="py-2">Relightable Images ({{ artifact.rtis.length }}):</p>
+          <ArtifactThumbnailList v-model="selectedMedia" :options="artifact.rtis.map((rti) => ({
+            thumbnail: rti.thumbnail,
             value: rti.url
           }))" />
         </div>
 
         <div v-if="artifact.images.length > 0" class="md:px-8 pt-4">
-          <p class="py-2">Still Images ({{ artifact.RTIs.length }}):</p>
+          <p class="py-2">Still Images ({{ artifact.rtis.length }}):</p>
           <ArtifactThumbnailList v-model="selectedMedia" :options="artifact.images.map((imageUrl) => ({
             thumbnail: imageUrl,
             value: imageUrl
@@ -86,6 +76,7 @@ async function onDeleteClicked() {
           <!-- <h1 style="flex-grow: 1;">{{ artifact.metadata.name || "Artifact" }}</h1> -->
           <RouterLink :to="`/artifacts/${id}/edit`" class="btn">Edit</RouterLink>
           <button @click="onDeleteClicked" class="btn">Delete</button>
+          <a :href="`${API_BASE_URL}artifacts/${id}/download`" download class="btn">Download</a>
         </div>
       </div>
     </div>

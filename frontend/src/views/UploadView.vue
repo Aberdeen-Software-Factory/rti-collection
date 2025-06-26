@@ -1,5 +1,5 @@
 <script setup>
-import ArtifactEditor from '../components/ArtifactEditor.vue';
+import ArtifactEditor from '@/components/ArtifactEditor.vue';
 import { assembleFormData, createArtifact } from '../backend.js';
 import { useRouter } from 'vue-router'
 import { useProgressFetch } from '@/composables/useProgressFetch';

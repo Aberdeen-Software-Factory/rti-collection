@@ -1,5 +1,5 @@
 <script setup>
-import ThemePicker from './ThemePicker.vue';
+import ThemePicker from '@/components/ThemePicker.vue';
 
 /**
 * @typedef {Object} Segment

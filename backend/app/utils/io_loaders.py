@@ -3,7 +3,7 @@ from pathlib import Path
 from fastapi import HTTPException, Request
 from pydantic import HttpUrl, ValidationError
 
-from ..schemas.model import Artifact, ArtifactPreview, Metadata, RelightWebMedia, Rtis
+from ..schemas.model import Artifact, ArtifactPreview, Metadata, RTIImageBundle
 from .io import find_first_in
 from .url import get_static_file_url
 
@@ -28,7 +28,7 @@ def load_images(path: Path, request: Request) -> list[HttpUrl]:
         return []
 
 
-def load_webrtis(path: Path, request: Request) -> list[RelightWebMedia]:
+def load_webrtis(path: Path, request: Request) -> list[RTIImageBundle]:
     """Return a list of webrtis contained within the subdirectories of path."""
     try:
         return [load_webrti(subpath, request) for subpath in path.iterdir() if subpath.is_dir()]
@@ -36,13 +36,15 @@ def load_webrtis(path: Path, request: Request) -> list[RelightWebMedia]:
         return []
 
 
-def load_webrti(path: Path, request: Request) -> RelightWebMedia:
+def load_webrti(path: Path, request: Request) -> RTIImageBundle:
     """Return a webrti representing the relight web format object contained in directory path."""
-    # TODO not sure if it would be better to return relative urls without base
-    return RelightWebMedia(
+    return RTIImageBundle(
         id=path.name,
-        url=get_static_file_url(request, path / "info.json"),
-        files=[get_static_file_url(request, p) for p in path.iterdir()],
+        url=get_static_file_url(request, path),
+        thumbnail=get_static_file_url(request, find_first_in(path, "plane_0.jpg")),
+        filenames=[
+            name.name for name in path.iterdir()
+        ]
     )
 
 
@@ -54,9 +56,7 @@ def load_artifact(path: Path, request: Request) -> Artifact:
         id=path.name,
         metadata=load_metadata(path / "metadata.json"),
         images=load_images(path / "images", request),
-        rtis=Rtis(
-            web=load_webrtis(path / "rtis" / "web", request),
-        ),
+        rtis=load_webrtis(path / "rtis" / "web", request)
     )
 
 

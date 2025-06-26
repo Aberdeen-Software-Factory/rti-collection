@@ -10,7 +10,7 @@ export function useProgressFetch(url) {
     })
     const isLoading = ref(false);
         
-    const progressFetch = ({ method, headers, body }) => {
+    const progressFetch = ({ method, headers = {}, body }) => {
         // reset state before fetching..
         data.value = null;
         error.value = null;

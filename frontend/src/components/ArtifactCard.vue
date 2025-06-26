@@ -1,7 +1,5 @@
 <script setup>
-/**
- * @typedef {import('../model/artifact').ArtifactPreview} ArtifactPreview
- */
+import ArtifactPreview from '@/models/ArtifactPreview';
 
 /** @type {{ artifact: ArtifactPreview }} */
 const { artifact } = defineProps({
@@ -14,8 +12,8 @@ const { artifact } = defineProps({
     <div 
         class="rounded-box h-full w-full aspect-square cursor-pointer overflow-hidden border border-base-300 bg-neutral content-center place-content-center text-center text-neutral-content"
     >
-        <img v-if="artifact.thumbnailURL"
-            :src="artifact.thumbnailURL"
+        <img v-if="artifact.thumbnail"
+            :src="artifact.thumbnail"
             class="h-full w-full object-cover transition-transform duration-300 ease-in-out"
         />
         <p v-else class="transition-transform duration-300 ease-in-out">No Image</p>

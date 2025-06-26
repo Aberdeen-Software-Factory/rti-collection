@@ -1,6 +1,6 @@
 <script setup>
-import Collection from '../components/Collection.vue';
-import Header from '../components/Header.vue';
+import Collection from '@/components/Collection.vue';
+import Header from '@/components/Header.vue';
 </script>
 
 <template>

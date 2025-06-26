@@ -10,10 +10,14 @@ let limeElement = ref();
 function initViewer(url) {
 	limeElement.value.replaceChildren();
 
-	if (url.endsWith('info.json')) {
-		initRTI(limeElement.value, url);
-	} else if (url.endsWith('.jpg')) {
+	if (!url) {
+		return
+	}
+
+	if (url.endsWith('.jpg')) {
 		initJPG(limeElement.value, url);
+	} else {
+		initRTI(limeElement.value, url + "/info.json");
 	}
 }
 

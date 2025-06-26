@@ -1,20 +1,8 @@
-from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel, Field, HttpUrl
 
-
-class CCLicenseType(str, Enum):
-    """Creative Commons License options as described at:
-    https://creativecommons.org/share-your-work/cclicenses/
-    """
-
-    CC_BY = "CC BY"
-    CC_BY_SA = "CC BY-SA"
-    CC_BY_NC = "CC BY-NC"
-    CC_BY_NC_SA = "CC BY-NC-SA"
-    CC_BY_ND = "CC BY-ND"
-    CC_BY_NC_ND = "CC BY-NC_ND"
+from .cclicense import CCLicenseType
 
 
 class Metadata(BaseModel):
@@ -33,34 +21,44 @@ class Metadata(BaseModel):
     copyright: CCLicenseType = CCLicenseType.CC_BY
 
 
-class RelightWebMedia(BaseModel):
+class RTIImageBundle(BaseModel):
+    """Represents a relightable RTI image in the ["relight-web"](https://vcg.isti.cnr.it/vcgtools/relight/#format) format.
+
+    This bundle includes all necessary files to view or process the RTI,
+    such as an `info.json` file, multiple JPEG planes, and a thumbnail.
+    """
+
     id: str
     url: HttpUrl
-    files: list[HttpUrl]
-
-
-class Rtis(BaseModel):
-    web: list[RelightWebMedia]
+    thumbnail: HttpUrl | None
+    filenames: list[str]
 
 
 class Artifact(BaseModel):
+    """Represents an artifact which contains relightable and still images and metadata."""
+
     id: str
     metadata: Metadata
     images: list[HttpUrl]
-    rtis: Rtis
+    rtis: list[RTIImageBundle]
+
+
+class ArtifactPreview(BaseModel):
+    """Represents a preview of the artifact.
+
+    This is not as comprehensive as :class:`Artifact`, used for displaying a list of artifacts.
+    """
+
+    id: str
+    metadata: Metadata
+    thumbnailURL: Optional[HttpUrl]
 
 
 class ArtifactResponse(BaseModel):
     artifact: Artifact
 
 
-class ArtifactPreview(BaseModel):
-    id: str
-    metadata: Metadata
-    thumbnailURL: Optional[HttpUrl]
-
-
 class ArtifactsResponse(BaseModel):
-    artifacts: list[ArtifactPreview]
     page: int
     pages: int
+    artifacts: list[ArtifactPreview]

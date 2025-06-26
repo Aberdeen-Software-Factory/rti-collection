@@ -1,6 +1,6 @@
-import { ArtifactPreview } from "@/model/artifact"
+import ArtifactPreview from "@/models/ArtifactPreview"
 import { computed, toValue } from "vue"
-import { useFetch } from "./useFetch"
+import { useFetch } from "@/composables/useFetch"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -29,7 +29,7 @@ export function useArtifacts(page = 1, pageSize = 50) {
     const { data, error, loading } = useFetch(url)
 
     const artifacts = computed(() => 
-        data?.value?.artifacts?.map(a => new ArtifactPreview(a)) ?? []
+        (data?.value?.artifacts ?? []).map(data => new ArtifactPreview(data))
     )
     const currentPage = computed(() => data?.value?.page ?? 1)
     const totalPages = computed(() => data?.value?.pages ?? 1)

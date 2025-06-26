@@ -179,7 +179,7 @@ async function listZipContents(zipFile, filename="plane_0.jpg") {
                 :key="file.name"
                 title="Click to remove"
             >
-            <img :src="blobUrl(file)" :alt="file.name" />
+            <img :src="blobUrl(file)" :alt="file.name" class="h-full w-full object-cover"/>
             <button
                 class="btn btn-accent btn-sm btn-square absolute top-2 right-2 z-10"
                 @click="() => removeImage(index)"

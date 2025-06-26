@@ -1,93 +1,41 @@
 <script setup>
-import { reactive, onMounted, ref } from 'vue'
+import { reactive } from 'vue'
+import FilesInput from '@/components/input/FilesInput.vue';
+import MetadataEditor from '@/components/input/MetadataEditor.vue';
+import Metadata from '@/models/Metadata';
 
-import { fetchFiles } from '@/utils';
-import JSZip from 'jszip';
-import FilesInput from './input/FilesInput.vue';
-import MetadataEditor from './input/MetadataEditor.vue';
-import LoadingHero from './display/LoadingHero.vue';
-import ErrorHero from './display/ErrorHero.vue';
-
-import { Artifact } from '@/model/artifact';
-
-const { artifact } = defineProps({
-    artifact: {
-        type: Artifact,
-        default: () => new Artifact(),
+const props = defineProps({
+    defaultMetadata: {
+        type: Object,
+        default: () => new Metadata(),
+    },
+    defaultImageFiles: {
+        type: Array,
+        default: () => []
+    },
+    defaultZipFiles: {
+        type: Array,
+        default: () => []
     },
 });
 
-const isLoading = ref(true);
-const error = ref(null)
-
 const emit = defineEmits(['submit'])
-console.log(artifact)
 
 const form = reactive({
-    id: artifact.id,
-    metadata: artifact.metadata,
-
-    // Media Files (these are needed as the artifact only contains urls to files on server)
-    imageFiles: [],  // .jpg files
-    webrtiFiles: [], // .zip files
+    metadata: props.defaultMetadata,
+    imageFiles: props.defaultImageFiles,  // .jpg files
+    webrtiFiles: props.defaultZipFiles, // .zip files
     ptmFiles: [],    // .ptm files
 });
-
 
 async function handleSubmit(event) {
     emit('submit', form);
     event.preventDefault();
 }
-
-async function downloadFiles() {
-  // Download RTI files
-  const zippedWebrtis = [];
-  
-  for (const rti of artifact.RTIs) {
-    console.log("webrti", rti)
-    const files = await fetchFiles(rti.files)
-    const zip = new JSZip();
-    for (const file of files) {
-      zip.file(file.name, file); // Add each file to the ZIP
-    }
-
-    const zipBlob = await zip.generateAsync({ type: "blob" }); // or "base64", "uint8array", etc.
-
-    const zipFile = new File([zipBlob], crypto.randomUUID(), { type: zipBlob.type })
-    zippedWebrtis.push(zipFile);
-  }
-  
-  form.webrtiFiles = zippedWebrtis;
-  
-  // Download image files
-  const images = await fetchFiles(artifact.images);
-  
-  form.imageFiles = images;
-  
-  isLoading.value = false;
-}
-
-onMounted(async () => {
-    try {
-        await downloadFiles() //TODO: convert to composable function
-    } catch (err) {
-        isLoading.value = false
-        error.value = err
-    }
-})
-
 </script>
 
 <template>
-    <template v-if="isLoading">
-        <LoadingHero/>
-    </template>
-    
-    <template v-else-if="error">
-        <ErrorHero :error="error"/>
-    </template>
-
-    <form v-else @submit.prevent="handleSubmit" class="grid max-w-2xl mx-auto p-2 w-full gap-4">
+    <form @submit.prevent="handleSubmit" class="grid max-w-2xl mx-auto p-2 w-full gap-4">
         <fieldset class="fieldset">
             <!-- <legend class="fieldset-legend text-2xl">Files</legend> -->
             

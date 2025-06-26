@@ -3,7 +3,7 @@ import ArtifactCard from './ArtifactCard.vue';
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useArtifacts } from '@/composables/useArtifacts';
-import LoadingHero from './display/LoadingHero.vue';
+import LoadingHero from '@/components/display/LoadingHero.vue';
 
 const route = useRoute()
 const router = useRouter()
@@ -36,7 +36,7 @@ watch(
 
   <div v-else-if="artifacts.length > 0" class="flex-grow bg-base-200">
     <div class="flex flex-col max-w-340 mx-auto">
-      <div class="p-4 md:p-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div class="p-4 md:p-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         <RouterLink v-for="(artifact, index) in artifacts" :to="`/artifacts/${artifact.id}`">
           <ArtifactCard :key="index" :artifact="artifact" />
         </RouterLink>
