@@ -14,7 +14,8 @@ from ..utils.paths import path_to_artifact
 
 authenticated_router = APIRouter(
     prefix="/artifacts",
-    dependencies=[Depends(authenticate)]
+    tags=["Edit"],
+    dependencies=[Depends(authenticate)],
 )
 
 def generate_artifact_id(name: str) -> str:

@@ -9,6 +9,7 @@ import shutil
 
 router = APIRouter(
     prefix="/converter",
+    tags=["Convert"],
 )
 
 @router.post("/")

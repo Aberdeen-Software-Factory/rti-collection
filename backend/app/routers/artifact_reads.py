@@ -8,6 +8,7 @@ from ..utils.paths import get_artifacts_root, path_to_artifact
 
 router = APIRouter(
     prefix="/artifacts",
+    tags=["View"],
 )
 
 
