@@ -25,7 +25,7 @@ const imageFiles = ref([])
 const webrtiFiles = ref([])
 const filesLoading = ref(false)
 
-const { data, error: uploadError, uploadProgress, downloadProgress, totalProgress, isLoading, progressFetch } = useProgressFetch(new URL(`/artifacts/${id}`, API_BASE_URL))
+const { data, error: uploadError, uploadProgress, downloadProgress, totalProgress, isLoading, progressFetch } = useProgressFetch(`/api/artifacts/${id}`)
 
 watch(data, (newData) => {
     if (newData) {

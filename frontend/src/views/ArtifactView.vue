@@ -76,7 +76,7 @@ async function onDeleteClicked() {
           <!-- <h1 style="flex-grow: 1;">{{ artifact.metadata.name || "Artifact" }}</h1> -->
           <RouterLink :to="`/artifacts/${id}/edit`" class="btn">Edit</RouterLink>
           <button @click="onDeleteClicked" class="btn">Delete</button>
-          <a :href="`${API_BASE_URL}artifacts/${id}/download`" download class="btn">Download</a>
+          <a :href="`/api/artifacts/${id}/download`" download class="btn">Download</a>
         </div>
       </div>
     </div>

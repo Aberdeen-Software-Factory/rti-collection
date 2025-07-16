@@ -51,6 +51,7 @@ export function useProgressFetch(url) {
             error.value = new Error('Network error during upload')
         }
         
+        xhr.withCredentials = true
         xhr.open(toValue(method), toValue(url))
         for (const [name, value] of Object.entries(toValue(headers))) {
             xhr.setRequestHeader(name, value)

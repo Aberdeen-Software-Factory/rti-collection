@@ -23,7 +23,7 @@ The API is built with [FastAPI](https://fastapi.tiangolo.com)
     deactivate
     ```
 
-## Run Locally
+## Run Locally
 
 From the `/backend` directory, start the development server with:
 ```

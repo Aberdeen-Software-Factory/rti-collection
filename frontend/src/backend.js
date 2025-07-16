@@ -127,7 +127,7 @@ async function deleteArtifact(id) {
     const password = prompt("Enter your password:");
     const credentials = btoa(`${username}:${password}`);
     
-    const res = await fetch(new URL(`/artifacts/${id}`, API_BASE_URL), {
+    const res = await fetch(`/api/artifacts/${id}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Basic ${credentials}`

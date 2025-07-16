@@ -1,0 +1,30 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: fastapi-backend
+    networks:
+      - webapp-network
+    expose:
+      - "8000" # exposes port internally to network
+    environment:
+      - API_USERNAME=
+      - API_PASSWORD=
+      # ARTIFACTS_DIR is not set, app uses default path
+    volumes:
+      - ./backend/uploads/:/uploads # customise uploads folder here
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: vue-frontend
+    networks:
+      - webapp-network
+    ports:
+      - "80:80" # expose port 80 to host
+    depends_on:
+      - backend
+
+networks:
+  webapp-network:
+    driver: bridge

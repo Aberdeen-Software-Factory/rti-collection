@@ -47,7 +47,7 @@ function initRTI(viewer, path) {
 	});
 	
 	lime.canvas.addLayer('RTI', layer); 
-	OpenLIME.Skin.setUrl(new URL(`${REPO_NAME}/openlime/skin.svg`, window.location.origin).toString());
+	OpenLIME.Skin.setUrl("/openlime/skin.svg");
 	// OpenLIME.Skin.setUrl('openlime/skin.svg');
 
 	let ui = new OpenLIME.UIBasic(lime, {
@@ -77,7 +77,7 @@ function initJPG(viewer, path) {
 	});
 	
 	lime.canvas.addLayer('JPG', layer);
-	OpenLIME.Skin.setUrl(new URL('openlime/skin.svg', window.location.origin).toString());
+	OpenLIME.Skin.setUrl("/openlime/skin.svg");
 
 	let ui = new OpenLIME.UIBasic(lime);
 	ui.actions.light.display = false;

@@ -20,10 +20,11 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 export function useArtifacts(page = 1, pageSize = 50) {
 
     const url = computed(() => {
-        const u = new URL('artifacts', API_BASE_URL)
-        u.searchParams.set('page', toValue(page))
-        u.searchParams.set('page_size', toValue(pageSize))
-        return u.toString()
+        const params = new URLSearchParams({
+            page: toValue(page),
+            page_size: toValue(pageSize),
+        })
+        return `/api/artifacts?${params.toString()}`
     })
 
     const { data, error, loading } = useFetch(url)

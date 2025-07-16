@@ -17,6 +17,7 @@ app = FastAPI(
         {"name": "Download", "description": "Endpoints for downloading files."},
         {"name": "Convert", "description": "Endpoints for converting between various RTI file formats."},
     ],
+    root_path="/api",
 )
 
 origins = [
